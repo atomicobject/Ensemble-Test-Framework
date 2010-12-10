@@ -1,0 +1,28 @@
+h1. Ensemble Test Automation Framework
+
+We created a test automation framework for InterSystems' Ensemble productions when we were hired to develop conversions, HL7 interfaces and web apps with Ensemble. Our framework brings test-driven development (TDD) to the InterSystems tool chain of Cach&egrave; and Ensemble.
+
+The benefits of TDD for InterSystems technology are similar to other technologies and platforms:
+
+* Improving the quality of new productions
+* Reducing the time/cost for developing new productions
+* Reducing mistakes made when modifying or extending existing productions
+* Reducing the cost of full regression testing
+
+Another significant benefit to test automation in this context is to ease the pain, anxiety and risk of upgrading to a new version of Ensemble.
+
+We've bundled an HL7 routing example, a simple general example application, and some documentation with the project to make it easier to get started. A rudimentary continuous integration task is included.
+
+We last used this framework with Ensemble version 2008.2.
+
+h3. More to Explore
+
+* "Michigan Medical PC Case Study":/files/AtomicMMPCCaseStudy.pdf [PDF]
+* "Saved by Tests - Importing and Upgrading to Ensemble 2008":http://spin.atomicobject.com/2009/03/16/saved-by-tests-importing-and-upgrading-to-ensemble-2008
+* "Test Automation in InterSystems Cache and Ensemble [Part 1]":http://spin.atomicobject.com/2008/12/19/test-automation-in-intersystems-cache
+* "Test Automation in InterSystems Cache and Ensemble [Part 2]":http://spin.atomicobject.com/2009/01/17/testing-ensemble-productions
+* "Test-Driven Development summary":http://en.wikipedia.org/wiki/Test-driven_development
+
+h3. Production Testing Demonstration Video
+
+The video can be watched in "high quality":http://www.youtube.com/watch?v=gmI70PTiiMo or directly but in lower resolution below.
