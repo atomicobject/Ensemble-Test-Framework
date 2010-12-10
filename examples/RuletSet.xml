@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Export generator="Cache" version="22" zv="Cache for UNIX (Apple Mac OS X for x86) 2008.2 (Build 526U)" ts="2009-03-18 19:03:17">
+<Document name="Ensemble.RoutingRule.rul"><routingRule host="Ensemble" name="RoutingRule" context="EnsLib.HL7.MsgRouter.RoutingEngine" doAll="true" source="HL7FileService" msgClass="EnsLib.HL7.Message" docName="" docCategory="" docType="">
+  <description></description>
+  <rule source="" msgClass="" docName="" docCategory="" docType="2.1:ORM_O01">
+    <action type="send" target="HL7FileOperation" transform=""></action>
+  </rule>
+  <rule source="HL7TCPService" msgClass="" docName="" docCategory="" docType="2.1:ADT_A12">
+    <condition join="AND" operator="=" op1="HL7.{PV1:ADMITSOURCE}" op2="&quot;HOLLAND&quot;"></condition>
+    <action type="send" target="HL7TCPOperation" transform="Ensemble.DTL.HL7Transform"></action>
+  </rule>
+  <rule source="HL7TCPService" msgClass="" docName="" docCategory="" docType="2.1:ADT_A12">
+    <condition join="AND" operator="=" op1="HL7.{PV1:ADMITSOURCE}" op2="&quot;GRAND RAPIDS&quot;"></condition>
+    <action type="send" target="HL7FTPOperation" transform="Ensemble.DTL.HL7Transform"></action>
+  </rule>
+</routingRule>
+</Document></Export>

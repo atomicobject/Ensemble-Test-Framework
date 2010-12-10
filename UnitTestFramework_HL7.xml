@@ -1,0 +1,1781 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Export generator="Cache" version="22" zv="Cache for UNIX (Apple Mac OS X for x86) 2008.2 (Build 526U)" ts="2009-03-20 14:55:43">
+<Project name="DEVCON_HL7" LastModified="2009-03-20 14:55:43" Target="##class(Ensemble.Tests.HL7TransformTest).Run()" TargetType="2">
+  <Items>
+    <ProjectItem name="Ensemble.DTL.HL7Transform" type="CLS"/>
+    <ProjectItem name="Ensemble.Production" type="CLS"/>
+    <ProjectItem name="Ensemble.RoutingRule.RUL" type="RUL"/>
+    <ProjectItem name="Ensemble.Tests.HL7TransformTest" type="CLS"/>
+    <ProjectItem name="Ensemble.Tests.MsgRouterTest" type="CLS"/>
+    <ProjectItem name="Ensemble.Tests.ProductionTest" type="CLS"/>
+    <ProjectItem name="Ensemble.Tests.SettingsTest" type="CLS"/>
+    <ProjectItem name="Ensemble.Tests.TestHelper" type="CLS"/>
+    <ProjectItem name="Ensemble.Tests.TestSuite" type="CLS"/>
+    <ProjectItem name="UnitTest.ContinuousIntegrationEmailAlert" type="CLS"/>
+    <ProjectItem name="UnitTest.ContinuousIntegrationService" type="CLS"/>
+    <ProjectItem name="UnitTest.DataTypeWrapper" type="CLS"/>
+    <ProjectItem name="UnitTest.HL7Reader" type="CLS"/>
+    <ProjectItem name="UnitTest.HL7Sender" type="CLS"/>
+    <ProjectItem name="UnitTest.ProductionTestHelper" type="CLS"/>
+    <ProjectItem name="UnitTest.Stub" type="CLS"/>
+    <ProjectItem name="UnitTest.TestHelper" type="CLS"/>
+    <ProjectItem name="UnitTest.TestRunner" type="CLS"/>
+    <ProjectItem name="UnitTest.TestSuite" type="CLS"/>
+  </Items>
+</Project>
+
+
+<Class name="Ensemble.DTL.HL7Transform">
+<Super>Ens.DataTransformDTL</Super>
+<TimeChanged>61431,51564.808209</TimeChanged>
+<TimeCreated>61430,33743.98647</TimeCreated>
+
+<XData name="DTL">
+<XMLNamespace>http://www.intersystems.com/dtl</XMLNamespace>
+<Data><![CDATA[
+<?xml version="1.0" ?>
+<transform targetClass='EnsLib.HL7.Message' targetDocType='2.1:BAR_P02' sourceClass='EnsLib.HL7.Message' sourceDocType='2.1:ADT_A12' create='new' language='objectscript'>
+<assign property='target.{MSH}' value='source.{MSH}' action='set'/>
+<assign property='target.{EVN}' value='source.{EVN}' action='set'/>
+<assign property='target.{PIDgrp(1).PID}' value='source.{PID}' action='set'/>
+<assign property='target.{PIDgrp(1).PV1}' value='source.{PV1}' action='set'/>
+<if condition='source.{PV1:ASSIGNEDPATIENTLOCATION} = "AO"'>
+<true>
+<assign property='target.{MSH:SENDINGAPPLICATION}' value='"MedManager"' action='set'/>
+<assign property='target.{MSH:SENDINGFACILITY}' value='"Atomic"' action='set'/>
+</true>
+<false>
+<assign property='target.{MSH:SENDINGAPPLICATION}' value='"Epic"' action='set'/>
+<assign property='target.{MSH:SENDINGFACILITY}' value='"Watchmen"' action='set'/>
+</false>
+</if>
+</transform>
+]]></Data>
+</XData>
+</Class>
+
+
+<Class name="Ensemble.Production">
+<Super>Ens.Production</Super>
+<TimeChanged>61439,28044.023314</TimeChanged>
+<TimeCreated>61430,29844.466304</TimeCreated>
+
+<XData name="ProductionDefinition">
+<Data><![CDATA[
+<Production Name="Ensemble.Production" LogGeneralTraceEvents="false">
+  <Description></Description>
+  <ActorPoolSize>2</ActorPoolSize>
+  <Item Name="MsgRouter" Category="" ClassName="EnsLib.HL7.MsgRouter.RoutingEngine" PoolSize="0" Enabled="true" Foreground="false" InactivityTimeout="0" Comment="This handles message routing logic." LogTraceEvents="false" Schedule="">
+    <Setting Target="Host" Name="BusinessRuleName">Ensemble.RoutingRule</Setting>
+    <Setting Target="Host" Name="Validation">dm-z</Setting>
+  </Item>
+  <Item Name="HL7FileService" Category="" ClassName="EnsLib.HL7.Service.FileService" PoolSize="1" Enabled="true" Foreground="false" InactivityTimeout="0" Comment="This is a default HL7 File Service." LogTraceEvents="false" Schedule="">
+    <Setting Target="Host" Name="AckTargetConfigNames"></Setting>
+    <Setting Target="Host" Name="Framing">Flexible</Setting>
+    <Setting Target="Host" Name="TargetConfigNames">MsgRouter</Setting>
+    <Setting Target="Host" Name="SearchTableClass">EnsLib.HL7.SearchTable</Setting>
+    <Setting Target="Host" Name="LocalFacilityApplication">ISC:EnsembleHL7</Setting>
+    <Setting Target="Host" Name="AckMode">Never</Setting>
+    <Setting Target="Host" Name="UseAckCommitCodes">1</Setting>
+    <Setting Target="Host" Name="IgnoreInboundAck">1</Setting>
+    <Setting Target="Host" Name="AddNackERR">0</Setting>
+    <Setting Target="Host" Name="BatchHandling">1Session</Setting>
+    <Setting Target="Host" Name="MessageSchemaCategory">2.1</Setting>
+    <Setting Target="Host" Name="DefCharEncoding">Latin1</Setting>
+    <Setting Target="Host" Name="AlertGracePeriod">0</Setting>
+    <Setting Target="Host" Name="AlertOnError">0</Setting>
+    <Setting Target="Host" Name="ArchiveIO">0</Setting>
+    <Setting Target="Adapter" Name="FilePath">/tmp/</Setting>
+    <Setting Target="Adapter" Name="FileSpec">*</Setting>
+    <Setting Target="Adapter" Name="ArchivePath"></Setting>
+    <Setting Target="Adapter" Name="WorkPath"></Setting>
+    <Setting Target="Adapter" Name="Charset">Default</Setting>
+    <Setting Target="Adapter" Name="FileAccessTimeout">10</Setting>
+    <Setting Target="Adapter" Name="AppendTimestamp"></Setting>
+    <Setting Target="Adapter" Name="CallInterval">5</Setting>
+  </Item>
+  <Item Name="HL7FileOperation" Category="" ClassName="EnsLib.HL7.Operation.FileOperation" PoolSize="1" Enabled="true" Foreground="false" InactivityTimeout="0" Comment="This is a default HL7 File Operation." LogTraceEvents="false" Schedule="">
+    <Setting Target="Host" Name="Filename">Processed_%f</Setting>
+    <Setting Target="Host" Name="AutoBatchParentSegs">0</Setting>
+    <Setting Target="Host" Name="Separators"><![CDATA[|^~\&]]]]><![CDATA[></Setting>
+    <Setting Target="Host" Name="SearchTableClass"></Setting>
+    <Setting Target="Host" Name="DefCharEncoding">Latin1</Setting>
+    <Setting Target="Host" Name="AlertRetryGracePeriod">0</Setting>
+    <Setting Target="Host" Name="RetryInterval">5</Setting>
+    <Setting Target="Host" Name="FailureTimeout">-1</Setting>
+    <Setting Target="Host" Name="AlertOnError">0</Setting>
+    <Setting Target="Host" Name="ArchiveIO">0</Setting>
+    <Setting Target="Host" Name="Framing">AsciiLF</Setting>
+    <Setting Target="Adapter" Name="FilePath">/tmp/</Setting>
+    <Setting Target="Adapter" Name="Overwrite">0</Setting>
+    <Setting Target="Adapter" Name="Charset">Default</Setting>
+    <Setting Target="Adapter" Name="OpenTimeout">5</Setting>
+  </Item>
+  <Item Name="HL7TCPService" Category="" ClassName="EnsLib.HL7.Service.TCPService" PoolSize="1" Enabled="true" Foreground="false" InactivityTimeout="0" Comment="" LogTraceEvents="false" Schedule="">
+    <Setting Target="Host" Name="TargetConfigNames">MsgRouter</Setting>
+    <Setting Target="Host" Name="SearchTableClass">EnsLib.HL7.SearchTable</Setting>
+    <Setting Target="Host" Name="LocalFacilityApplication">ISC:EnsembleHL7</Setting>
+    <Setting Target="Host" Name="Framing">Flexible</Setting>
+    <Setting Target="Host" Name="AckMode">Immed</Setting>
+    <Setting Target="Host" Name="UseAckCommitCodes">1</Setting>
+    <Setting Target="Host" Name="IgnoreInboundAck">1</Setting>
+    <Setting Target="Host" Name="AddNackERR">0</Setting>
+    <Setting Target="Host" Name="BatchHandling">1Session</Setting>
+    <Setting Target="Host" Name="MessageSchemaCategory">2.1</Setting>
+    <Setting Target="Host" Name="DefCharEncoding">Latin1</Setting>
+    <Setting Target="Host" Name="AlertGracePeriod">0</Setting>
+    <Setting Target="Host" Name="AlertOnError">0</Setting>
+    <Setting Target="Host" Name="ArchiveIO">0</Setting>
+    <Setting Target="Adapter" Name="JobPerConnection">0</Setting>
+    <Setting Target="Adapter" Name="AllowedIPAddresses"></Setting>
+    <Setting Target="Adapter" Name="QSize">100</Setting>
+    <Setting Target="Adapter" Name="CallInterval">5</Setting>
+    <Setting Target="Adapter" Name="Port">435</Setting>
+    <Setting Target="Adapter" Name="StayConnected">-1</Setting>
+    <Setting Target="Adapter" Name="ReadTimeout">5</Setting>
+    <Setting Target="Adapter" Name="SSLConfig"></Setting>
+  </Item>
+  <Item Name="HL7TCPOperation" Category="" ClassName="EnsLib.HL7.Operation.TCPOperation" PoolSize="1" Enabled="true" Foreground="false" InactivityTimeout="0" Comment="" LogTraceEvents="false" Schedule="">
+    <Setting Target="Host" Name="ReplyCodeActions"></Setting>
+    <Setting Target="Host" Name="NoFailWhileDisconnected">0</Setting>
+    <Setting Target="Host" Name="Separators"><![CDATA[|^~\&]]]]><![CDATA[></Setting>
+    <Setting Target="Host" Name="SearchTableClass"></Setting>
+    <Setting Target="Host" Name="DefCharEncoding">Latin1</Setting>
+    <Setting Target="Host" Name="AlertRetryGracePeriod">0</Setting>
+    <Setting Target="Host" Name="RetryInterval">5</Setting>
+    <Setting Target="Host" Name="FailureTimeout">-1</Setting>
+    <Setting Target="Host" Name="AlertOnError">0</Setting>
+    <Setting Target="Host" Name="ArchiveIO">0</Setting>
+    <Setting Target="Host" Name="Framing">MLLP</Setting>
+    <Setting Target="Adapter" Name="IPAddress">localhost</Setting>
+    <Setting Target="Adapter" Name="Port">9323</Setting>
+    <Setting Target="Adapter" Name="ResponseTimeout">30</Setting>
+    <Setting Target="Adapter" Name="StayConnected">-1</Setting>
+    <Setting Target="Adapter" Name="ConnectTimeout">5</Setting>
+    <Setting Target="Adapter" Name="ReconnectRetry">5</Setting>
+    <Setting Target="Adapter" Name="GetReply">1</Setting>
+    <Setting Target="Adapter" Name="ReadTimeout">5</Setting>
+    <Setting Target="Adapter" Name="SSLConfig"></Setting>
+  </Item>
+  <Item Name="HL7FTPOperation" Category="" ClassName="EnsLib.HL7.Operation.FTPOperation" PoolSize="1" Enabled="true" Foreground="false" InactivityTimeout="0" Comment="" LogTraceEvents="false" Schedule="">
+    <Setting Target="Host" Name="Filename">Processed_%f</Setting>
+    <Setting Target="Host" Name="AutoBatchParentSegs">0</Setting>
+    <Setting Target="Host" Name="Separators"><![CDATA[|^~\&]]]]><![CDATA[></Setting>
+    <Setting Target="Host" Name="SearchTableClass"></Setting>
+    <Setting Target="Host" Name="DefCharEncoding">Latin1</Setting>
+    <Setting Target="Host" Name="AlertRetryGracePeriod">0</Setting>
+    <Setting Target="Host" Name="RetryInterval">5</Setting>
+    <Setting Target="Host" Name="FailureTimeout">-1</Setting>
+    <Setting Target="Host" Name="AlertOnError">0</Setting>
+    <Setting Target="Host" Name="ArchiveIO">0</Setting>
+    <Setting Target="Host" Name="Framing">AsciiLF</Setting>
+    <Setting Target="Adapter" Name="Overwrite">1</Setting>
+    <Setting Target="Adapter" Name="FTPServer">ftp.atomicobject.com</Setting>
+    <Setting Target="Adapter" Name="FTPPort">21</Setting>
+    <Setting Target="Adapter" Name="Credentials">AOFTP</Setting>
+    <Setting Target="Adapter" Name="SSLConfig"></Setting>
+    <Setting Target="Adapter" Name="FilePath">/hl7/</Setting>
+    <Setting Target="Adapter" Name="Charset">Binary</Setting>
+    <Setting Target="Adapter" Name="StayConnected">-1</Setting>
+    <Setting Target="Adapter" Name="ConnectTimeout">5</Setting>
+    <Setting Target="Adapter" Name="UsePASV">1</Setting>
+  </Item>
+</Production>
+]]></Data>
+</XData>
+</Class>
+
+
+<Document name="Ensemble.RoutingRule.RUL"><routingRule host="Ensemble" name="RoutingRule" context="EnsLib.HL7.MsgRouter.RoutingEngine" doAll="true" source="HL7FileService" msgClass="EnsLib.HL7.Message" docName="" docCategory="" docType="">
+  <description></description>
+  <rule source="" msgClass="" docName="" docCategory="" docType="2.1:ORM_O01">
+    <action type="send" target="HL7FileOperation" transform=""></action>
+  </rule>
+  <rule source="HL7TCPService" msgClass="" docName="" docCategory="" docType="2.1:ADT_A12">
+    <condition join="AND" operator="=" op1="HL7.{PV1:ADMITSOURCE}" op2="&quot;HOLLAND&quot;"></condition>
+    <action type="send" target="HL7TCPOperation" transform="Ensemble.DTL.HL7Transform"></action>
+  </rule>
+  <rule source="HL7TCPService" msgClass="" docName="" docCategory="" docType="2.1:ADT_A12">
+    <condition join="AND" operator="=" op1="HL7.{PV1:ADMITSOURCE}" op2="&quot;GRAND RAPIDS&quot;"></condition>
+    <action type="send" target="HL7FTPOperation" transform="Ensemble.DTL.HL7Transform"></action>
+  </rule>
+</routingRule>
+</Document>
+
+<Class name="Ensemble.Tests.HL7TransformTest">
+<Super>Ensemble.Tests.TestHelper</Super>
+<TimeChanged>61440,53349.253225</TimeChanged>
+<TimeCreated>61430,68071.353109</TimeCreated>
+
+<Method name="TestAssignMSHAtomic">
+<Description><![CDATA[
+<ol>
+<li>Creates an HL7 Message and builds up the MSH section.</li>
+<li>Invokes the <b>Transform</b> on the DTL class.</li>
+<li>Asserts that MSH segment was migrated to the new message.</li>
+<li>Asserts that 'Atomic' is assigned as the MSH:SENDINGFACILITY based on the value of PV1:ASSIGNEDPATIENTLOCATION</li>
+<li>Asserts that 'MedManager' is assigned as the MSH:SENDINGAPPLICATION based on the value of PV1:ASSIGNEDPATIENTLOCATION</li>
+</ol>
+<example>
+Set hl7 = ..CreateMessage("2.1:ADT_A12")
+Do hl7.SetValueAt("A12", "EVN:EVENTTYPECODE")
+Do hl7.SetValueAt("AO", "PV1:ASSIGNEDPATIENTLOCATION")
+Do hl7.SetValueAt("ACK", "MSH:MESSAGETYPE")
+Do hl7.SetValueAt("20080112.123", "MSH:DATETIMEOFMESSAGE")
+Do hl7.SetValueAt("FOO", "MSH:SENDINGAPPLICATION")
+Do hl7.SetValueAt("BAR", "MSH:SENDINGFACILITY")
+Do hl7.%Save()
+ 
+Do ##class(Ensemble.DTL.HL7Transform).Transform(hl7, .target)
+	 
+Do $$$AssertEquals("ACK", target.GetValueAt("MSH:MESSAGETYPE"))
+Do $$$AssertEquals("20080112.123", target.GetValueAt("MSH:DATETIMEOFMESSAGE"))
+Do $$$AssertEquals("A12", target.GetValueAt("EVN:EVENTTYPECODE"))
+Do $$$AssertEquals("MedManager", target.GetValueAt("MSH:SENDINGAPPLICATION"))
+Do $$$AssertEquals("Atomic", target.GetValueAt("MSH:SENDINGFACILITY"))
+ 
+</example>]]></Description>
+<Implementation><![CDATA[
+	Set hl7 = ..CreateMessage("2.1:ADT_A12")
+	Do hl7.SetValueAt("A12", "EVN:EVENTTYPECODE")
+	Do hl7.SetValueAt("AO", "PV1:ASSIGNEDPATIENTLOCATION")
+	Do hl7.SetValueAt("ACK", "MSH:MESSAGETYPE")
+	Do hl7.SetValueAt("20080112.123", "MSH:DATETIMEOFMESSAGE")
+	Do hl7.SetValueAt("FOO", "MSH:SENDINGAPPLICATION")
+	Do hl7.SetValueAt("BAR", "MSH:SENDINGFACILITY")
+	Do hl7.%Save()
+	
+	Do ##class(Ensemble.DTL.HL7Transform).Transform(hl7, .target)
+	
+	Do $$$AssertEquals("ACK", target.GetValueAt("MSH:MESSAGETYPE"))
+	Do $$$AssertEquals("20080112.123", target.GetValueAt("MSH:DATETIMEOFMESSAGE"))
+	Do $$$AssertEquals("A12", target.GetValueAt("EVN:EVENTTYPECODE"))
+	Do $$$AssertEquals("MedManager", target.GetValueAt("MSH:SENDINGAPPLICATION"))
+	Do $$$AssertEquals("Atomic", target.GetValueAt("MSH:SENDINGFACILITY"))
+]]></Implementation>
+</Method>
+
+<Method name="TestAssignMSHOther">
+<Description><![CDATA[
+<ol>
+<li>Creates an HL7 Message and builds up the MSH section.</li>
+<li>Invokes the <b>Transform</b> on the DTL class.</li>
+<li>Asserts that MSH segment was migrated to the new message.</li>
+<li>Asserts that 'Watchmen' is assigned as the MSH:SENDINGFACILITY based on the value of PV1:ASSIGNEDPATIENTLOCATION</li>
+<li>Asserts that 'Epic' is assigned as the MSH:SENDINGAPPLICATION based on the value of PV1:ASSIGNEDPATIENTLOCATION</li>
+</ol>
+<example>
+Set hl7 = ..CreateMessage("2.1:ADT_A12")
+Do hl7.SetValueAt("A12", "EVN:EVENTTYPECODE")
+Do hl7.SetValueAt("AO", "PV1:ASSIGNEDPATIENTLOCATION")
+Do hl7.SetValueAt("ACK", "MSH:MESSAGETYPE")
+Do hl7.SetValueAt("20080112.123", "MSH:DATETIMEOFMESSAGE")
+Do hl7.SetValueAt("FOO", "MSH:SENDINGAPPLICATION")
+Do hl7.SetValueAt("BAR", "MSH:SENDINGFACILITY")
+Do hl7.%Save()
+ 
+Do ##class(Ensemble.DTL.HL7Transform).Transform(hl7, .target)
+	 
+Do $$$AssertEquals("ACK", target.GetValueAt("MSH:MESSAGETYPE"))
+Do $$$AssertEquals("20080112.123", target.GetValueAt("MSH:DATETIMEOFMESSAGE"))
+Do $$$AssertEquals("A12", target.GetValueAt("EVN:EVENTTYPECODE"))
+Do $$$AssertEquals("Epic", target.GetValueAt("MSH:SENDINGAPPLICATION"))
+Do $$$AssertEquals("Watchmen", target.GetValueAt("MSH:SENDINGFACILITY"))
+ 
+</example>]]></Description>
+<Implementation><![CDATA[
+	Set hl7 = ..CreateMessage("2.1:ADT_A12")
+	Do hl7.SetValueAt("A12", "EVN:EVENTTYPECODE")
+	Do hl7.SetValueAt("HOLLAND", "PV1:ASSIGNEDPATIENTLOCATION")
+	Do hl7.SetValueAt("ACK", "MSH:MESSAGETYPE")
+	Do hl7.SetValueAt("20080112.123", "MSH:DATETIMEOFMESSAGE")
+	Do hl7.SetValueAt("FOO", "MSH:SENDINGAPPLICATION")
+	Do hl7.SetValueAt("BAR", "MSH:SENDINGFACILITY")
+	Do hl7.%Save()
+	
+	Do ##class(Ensemble.DTL.HL7Transform).Transform(hl7, .target)
+	
+	Do $$$AssertEquals("ACK", target.GetValueAt("MSH:MESSAGETYPE"))
+	Do $$$AssertEquals("20080112.123", target.GetValueAt("MSH:DATETIMEOFMESSAGE"))
+	Do $$$AssertEquals("A12", target.GetValueAt("EVN:EVENTTYPECODE"))
+	Do $$$AssertEquals("Epic", target.GetValueAt("MSH:SENDINGAPPLICATION"))
+	Do $$$AssertEquals("Watchmen", target.GetValueAt("MSH:SENDINGFACILITY"))
+]]></Implementation>
+</Method>
+
+<Method name="TestAssignEVN">
+<Description><![CDATA[
+Tests that the EVN segment is transferred over to the new message
+<example>
+Set hl7 = ..CreateMessage("2.1:ADT_A12")
+Do hl7.SetValueAt("5", "EVN:EVENTTYPECODE")
+Do hl7.SetValueAt("20090201", "EVN:DATETIMEOFEVENT")
+Do hl7.SetValueAt("20090121", "EVN:DATETIMEPLANEVENT")
+Do hl7.%Save()
+ 
+Do ##class(Ensemble.DTL.HL7Transform).Transform(hl7, .target)
+   	
+Do $$$AssertEquals(hl7.GetValueAt("EVN"), target.GetValueAt("EVN"))
+ 
+</example>]]></Description>
+<Implementation><![CDATA[
+	Set hl7 = ..CreateMessage("2.1:ADT_A12")
+	Do hl7.SetValueAt("5", "EVN:EVENTTYPECODE")
+	Do hl7.SetValueAt("20090201", "EVN:DATETIMEOFEVENT")
+	Do hl7.SetValueAt("20090121", "EVN:DATETIMEPLANEVENT")
+	Do hl7.%Save()
+	
+	Do ##class(Ensemble.DTL.HL7Transform).Transform(hl7, .target)
+	
+	Do $$$AssertEquals(hl7.GetValueAt("EVN"), target.GetValueAt("EVN"))
+]]></Implementation>
+</Method>
+
+<Method name="TestAssignPID">
+<Description><![CDATA[
+Tests that the PID segment is migrated to the PIDGrp().PID field.
+<example>
+Set hl7 = ..CreateMessage("2.1:ADT_A12")
+Do hl7.SetValueAt("John Smith", "PID:PATIENTNAME")
+Do hl7.SetValueAt("Busher", "PID:MOTHERSMAIDENNAME")
+Do hl7.SetValueAt("M", "PID:SEX")
+Do hl7.SetValueAt("32", "PID:SETIDPATIENTID")
+Do hl7.%Save()
+ 
+Do ##class(Ensemble.DTL.HL7Transform).Transform(hl7, .target)
+ 
+Do $$$AssertEquals(hl7.GetValueAt("PID"), target.GetValueAt("PIDgrp(1).PID"))
+</example>]]></Description>
+<Implementation><![CDATA[
+	Set hl7 = ..CreateMessage("2.1:ADT_A12")
+	Do hl7.SetValueAt("John Smith", "PID:PATIENTNAME")
+	Do hl7.SetValueAt("Busher", "PID:MOTHERSMAIDENNAME")
+	Do hl7.SetValueAt("M", "PID:SEX")
+	Do hl7.SetValueAt("32", "PID:SETIDPATIENTID")
+	Do hl7.%Save()
+	
+	Do ##class(Ensemble.DTL.HL7Transform).Transform(hl7, .target)
+	
+	Do $$$AssertEquals(hl7.GetValueAt("PID"), target.GetValueAt("PIDgrp(1).PID"))
+]]></Implementation>
+</Method>
+
+<Method name="TestAssignPV1">
+<Description><![CDATA[
+Tests that the PV1 segment is migrated to the PIDGrp().PV1 field.
+<example>
+Set hl7 = ..CreateMessage("2.1:ADT_A12")
+Do hl7.SetValueAt("Senior", "PV1:PATIENTCLASS")
+Do hl7.SetValueAt("Alfred", "PV1:ATTENDINGDOCTOR")
+Do hl7.SetValueAt("John", "PV1:REFERRINGDOCTOR")
+Do hl7.%Save()
+ 	
+Do ##class(Ensemble.DTL.HL7Transform).Transform(hl7, .target)
+	 
+Do $$$AssertEquals(hl7.GetValueAt("PV1"), target.GetValueAt("PIDgrp(1).PV1"))
+</example>]]></Description>
+<Implementation><![CDATA[
+	Set hl7 = ..CreateMessage("2.1:ADT_A12")
+	Do hl7.SetValueAt("Senior", "PV1:PATIENTCLASS")
+	Do hl7.SetValueAt("Alfred", "PV1:ATTENDINGDOCTOR")
+	Do hl7.SetValueAt("John", "PV1:REFERRINGDOCTOR")
+	Do hl7.%Save()
+	
+	Do ##class(Ensemble.DTL.HL7Transform).Transform(hl7, .target)
+	
+	Do $$$AssertEquals(hl7.GetValueAt("PV1"), target.GetValueAt("PIDgrp(1).PV1"))
+]]></Implementation>
+</Method>
+
+<Method name="TestTargetDoc">
+<Description><![CDATA[
+Tests that target message is assigned with the correct document type.
+<example>
+Set hl7 = ..CreateMessage("2.1:ADT_A12")
+Do hl7.%Save()
+	 
+Do ##class(Ensemble.DTL.HL7Transform).Transform(hl7, .target)
+	
+Do $$$AssertEquals("2.1:BAR_P02", target.DocType)
+</example>]]></Description>
+<Implementation><![CDATA[
+	Set hl7 = ..CreateMessage("2.1:ADT_A12")
+	Do hl7.%Save()
+	
+	Do ##class(Ensemble.DTL.HL7Transform).Transform(hl7, .target)
+	
+	Do $$$AssertEquals("2.1:BAR_P02", target.DocType)
+]]></Implementation>
+</Method>
+
+<Method name="CreateMessage">
+<Internal>1</Internal>
+<FormalSpec>docType:%String</FormalSpec>
+<ReturnType>EnsLib.HL7.Message</ReturnType>
+<Implementation><![CDATA[
+	Set message = ##class(EnsLib.HL7.Message).%New()
+	Set message.DocType = docType
+	Quit message
+]]></Implementation>
+</Method>
+</Class>
+
+
+<Class name="Ensemble.Tests.MsgRouterTest">
+<Super>UnitTest.ProductionTestHelper</Super>
+<TimeChanged>61439,40466.145335</TimeChanged>
+<TimeCreated>61430,35710.030068</TimeCreated>
+
+<Parameter name="PRODUCTION">
+<Description>
+Configures the production that is being tested against</Description>
+<Default>Ensemble.Production</Default>
+</Parameter>
+
+<Parameter name="CONFIG">
+<Description>
+The configuration item that is being tested</Description>
+<Default>MsgRouter</Default>
+</Parameter>
+
+<Method name="OnBeforeAllTests">
+<Internal>1</Internal>
+<ReturnType>%Status</ReturnType>
+<Implementation><![CDATA[
+	Do ..ChangeSetting(,..#CONFIG,"Validation", "d")
+	
+	Do ..StartProduction()
+	
+	Quit $$$OK
+]]></Implementation>
+</Method>
+
+<Method name="OnBeforeOneTest">
+<Internal>1</Internal>
+<ReturnType>%Status</ReturnType>
+<Implementation><![CDATA[
+	Do ##class(Ens.Rule.RuleLog).%KillExtent()
+	
+	Quit $$$OK
+]]></Implementation>
+</Method>
+
+<Method name="TestRule1">
+<Description><![CDATA[
+<ol>
+<li>Creates an HL7 message with the document type set to '2.1:ORM_O01'</li>
+<li>Sends message to HL7 message router as if it came from the 'HL7FileService'</li>
+<li>Asserts the route the message takes</li>
+</ol>
+<example>
+Set hl7 = ..CreateMessage("2.1:ORM_O01")
+ 	
+Do ..SendRequestTo(..#CONFIG, hl7, "HL7FileService")
+ 	
+Do ..AssertRoute("RoutingRule","Rule1",,"HL7FileOperation")
+ 
+</example>]]></Description>
+<Implementation><![CDATA[
+	Set hl7 = ..CreateMessage("2.1:ORM_O01")
+	
+	Do ..SendRequestTo(..#CONFIG, hl7, "HL7FileService")
+	
+	Do ..AssertRoute("RoutingRule","Rule1",,"HL7FileOperation")
+]]></Implementation>
+</Method>
+
+<Method name="TestRule1InvalidDoc">
+<Description><![CDATA[
+Creates a message with an invalid document type and asserts that it is not sent to anything.
+<example>
+Set hl7 = ..CreateMessage("2.1:ORM_O02")
+	 
+Do ..SendRequestTo(..#CONFIG, hl7, "HL7FileService")
+	 
+Do ..AssertDidNotRoute("RoutingRule", "Rule1")
+</example>]]></Description>
+<Implementation><![CDATA[
+	Set hl7 = ..CreateMessage("2.1:ORM_O02")
+	
+	Do ..SendRequestTo(..#CONFIG, hl7, "HL7FileService")
+	
+	Do ..AssertDidNotRoute("RoutingRule", "Rule1")
+]]></Implementation>
+</Method>
+
+<Method name="TestRule1BadSource">
+<Description><![CDATA[
+Creates a valid message but sends it to the router from an invalid source and asserts that it is not sent to anything.
+<example>
+Set hl7 = ..CreateMessage("2.1:ORM_O01")
+	 
+Do ..SendRequestTo(..#CONFIG, hl7, "HL7TCPService")
+	 
+Do ..AssertDidNotRoute("RoutingRule", "Rule1")
+</example>]]></Description>
+<Implementation><![CDATA[
+	Set hl7 = ..CreateMessage("2.1:ORM_O01")
+	
+	Do ..SendRequestTo(..#CONFIG, hl7, "HL7TCPService")
+	
+	Do ..AssertDidNotRoute("RoutingRule", "Rule1")
+]]></Implementation>
+</Method>
+
+<Method name="TestRule2">
+<Description><![CDATA[
+<ol>
+<li>Creates an HL7 message with the document type set to '2.1:ADT_A12'</li>
+<li>Sets the PV1:ADMITSOURCE to 'HOLLAND'</li>
+<li>Sends message to HL7 message router as if it came from the 'HL7TCPService'</li>
+<li>Asserts that the message is sent to the 'Ensemble.DTL.HL7Transform' transformation and 'HL7TCPOperation' operation</li>
+</ol>
+<example>
+Set hl7 = ..CreateMessage("2.1:ADT_A12")
+Do hl7.SetValueAt("HOLLAND", "PV1:ADMITSOURCE")
+ 	
+Do ..SendRequestTo(..#CONFIG, hl7, "HL7TCPService")
+ 	
+Do ..AssertRoute("RoutingRule", "Rule2", "Ensemble.DTL.HL7Transform","HL7TCPOperation")
+</example>]]></Description>
+<Implementation><![CDATA[
+	Set hl7 = ..CreateMessage("2.1:ADT_A12")
+	Do hl7.SetValueAt("HOLLAND", "PV1:ADMITSOURCE")
+	
+	Do ..SendRequestTo(..#CONFIG, hl7, "HL7TCPService")
+	
+	Do ..AssertRoute("RoutingRule", "Rule2", "Ensemble.DTL.HL7Transform","HL7TCPOperation")
+]]></Implementation>
+</Method>
+
+<Method name="TestRule3">
+<Description><![CDATA[
+<ol>
+<li>Creates an HL7 message with the document type set to '2.1:ADT_A12'</li>
+<li>Sets the PV1:ADMITSOURCE to 'HOLLAND'</li>
+<li>Sends message to HL7 message router as if it came from the 'HL7TCPService'</li>
+<li>Asserts that the message is sent to the 'Ensemble.DTL.HL7Transform' transformation and 'HL7FTPOperation' operation</li>
+</ol>
+<example>
+Set hl7 = ..CreateMessage("2.1:ADT_A12")
+Do hl7.SetValueAt("GRAND RAPIDS", "PV1:ADMITSOURCE")
+ 	
+Do ..SendRequestTo(..#CONFIG, hl7, "HL7TCPService")
+ 	
+Do ..AssertRoute("RoutingRule", "Rule2", "Ensemble.DTL.HL7Transform","HL7FTPOperation")
+</example>]]></Description>
+<Implementation><![CDATA[
+	Set hl7 = ..CreateMessage("2.1:ADT_A12")
+	Do hl7.SetValueAt("GRAND RAPIDS", "PV1:ADMITSOURCE")
+	
+	Do ..SendRequestTo(..#CONFIG, hl7, "HL7TCPService")
+
+	Do ..AssertRoute("RoutingRule", "Rule3", "Ensemble.DTL.HL7Transform","HL7FTPOperation")
+]]></Implementation>
+</Method>
+
+<Method name="OnAfterAllTests">
+<Internal>1</Internal>
+<ReturnType>%Status</ReturnType>
+<Implementation><![CDATA[
+	Do ..ChangeSetting(,..#CONFIG,"Validation","dm-z")
+
+	Do ..ForceStopProduction()
+	
+	Quit $$$OK
+]]></Implementation>
+</Method>
+</Class>
+
+
+<Class name="Ensemble.Tests.ProductionTest">
+<Super>UnitTest.ProductionTestHelper</Super>
+<TimeChanged>61440,53692.323001</TimeChanged>
+<TimeCreated>61431,49004.561368</TimeCreated>
+
+<Parameter name="PRODUCTION">
+<Description>
+Determines what production this test is running against.</Description>
+<Default>Ensemble.Production</Default>
+</Parameter>
+
+<Property name="Sender">
+<Type>UnitTest.HL7Sender</Type>
+</Property>
+
+<Method name="OnBeforeAllTests">
+<Description><![CDATA[
+<ol>
+<li>Instantaties cache class that will help us send HL7 messages over TCP and to a file.</li>
+<li>Sets main testing directory to a random directory name under the cache temp directory.</li>
+<li>Creates directory structure for testing.</li>
+<li>Update HL7FileService configuration item to look for HL7 files in our test directory.</li>
+<li>Loosen the validation restrictions on the message router to ease the overhead of setting up a message.</li>
+<li>Start the production.</li>
+</ol>
+<example>
+Set ..Sender = ##class(UnitTest.HL7Sender).%New()
+Set i%MainDir = ##class(%File).SubDirectoryName(##class(%SYS.System).TempDirectory(),$ZTIMESTAMP)
+Set i%HL7InputDir = ..SubMainDir("HL7/In")
+Set i%HL7OutputDir = ..SubMainDir("HL7/Out")
+Set i%HL7WorkDir = ..SubMainDir("HL7/Work")
+Set i%HL7ArchiveDir = ..SubMainDir("HL7/Archive")
+
+Do ..CreateMainDirTree()
+Do ..ChangeSetting(,"HL7FileService","FilePath", ..HL7InputDir)
+Do ..ChangeSetting(,"MsgRouter","Validation", "d")
+Do ..StartProduction()
+
+Quit $$$OK
+</example>]]></Description>
+<ReturnType>%Status</ReturnType>
+<Implementation><![CDATA[
+	Set ..Sender = ##class(UnitTest.HL7Sender).%New()
+	Set i%MainDir = ##class(%File).SubDirectoryName(##class(%SYS.System).TempDirectory(),$ZTIMESTAMP)
+	Set i%HL7InputDir = ..SubMainDir("HL7/In")
+	Set i%HL7OutputDir = ..SubMainDir("HL7/Out")
+	Set i%HL7WorkDir = ..SubMainDir("HL7/Work")
+	Set i%HL7ArchiveDir = ..SubMainDir("HL7/Archive")
+	
+	Do ..CreateMainDirTree()
+	Do ..ChangeSetting(,"HL7FileService","FilePath", ..HL7InputDir)
+	Do ..ChangeSetting(,"MsgRouter","Validation", "d")
+	Do ..StartProduction()
+	
+	Quit $$$OK
+]]></Implementation>
+</Method>
+
+<Method name="OnBeforeOneTest">
+<Description><![CDATA[
+Destroys all HL7 messages and message trace information.
+<example>
+Do ##class(EnsLib.HL7.Message).%KillExtent()
+Do ##class(Ens.MessageHeader).%KillExtent()
+Do ##class(Ens.MessageBody).%KillExtent()
+	
+Quit $$$OK
+
+</example>]]></Description>
+<ReturnType>%Status</ReturnType>
+<Implementation><![CDATA[
+	Do ##class(EnsLib.HL7.Message).%KillExtent()
+	Do ##class(Ens.MessageHeader).%KillExtent()
+	Do ##class(Ens.MessageBody).%KillExtent()
+	
+	Quit $$$OK
+]]></Implementation>
+</Method>
+
+<Method name="TestTCPMessageFromHolland">
+<Description><![CDATA[
+<ul>
+<li>Creates a HL7 message that has "HOLLAND" as the Admit Source which means it should be sent to the "HL7TCPOperation" configuration item.</li>
+<li>Using the <class>UnitTest.HL7Sender</class> we send the message over TCP to the "HL7TCPService".</li>
+<li>We wait for the call interval for that configuration item.</li>
+<li>Lastly, we assert the path the message took through the production; HL7FileService -> MsgRouter -> HL7TCPOperation</li>
+</ul>
+<example>
+Set message = ..CreateMessage("2.1:ADT_A12")
+Do message.SetValueAt("2.1", "MSH:VERSIONID")
+Do message.SetValueAt("ADT^A12", "MSH:MESSAGETYPE")
+Do message.SetValueAt("A12", "EVN:EVENTTYPECODE")
+Do message.SetValueAt("323", "PID:SETIDPATIENTID")
+Do message.SetValueAt("Justin", "PID:PATIENTNAME")
+Do message.SetValueAt("Adult", "PV1:PATIENTCLASS")
+Do message.SetValueAt("MMPC", "PV1:ASSIGNEDPATIENTLOCATION")
+Do message.SetValueAt("HOLLAND", "PV1:ADMITSOURCE")
+ 
+Do $$$AssertStatusOK(..Sender.SendTCP("127.0.0.1","435",message))
+ 
+Do ..WaitForCallInterval("HL7TCPService")
+ 
+Do ..AssertMessageTrace("HL7TCPService","MsgRouter","HL7TCPOperation")
+
+</example>]]></Description>
+<Implementation><![CDATA[
+	Set message = ..CreateMessage("2.1:ADT_A12")
+	Do message.SetValueAt("2.1", "MSH:VERSIONID")
+	Do message.SetValueAt("ADT^A12", "MSH:MESSAGETYPE")
+	Do message.SetValueAt("A12", "EVN:EVENTTYPECODE")
+	Do message.SetValueAt("323", "PID:SETIDPATIENTID")
+	Do message.SetValueAt("Justin", "PID:PATIENTNAME")
+	Do message.SetValueAt("Adult", "PV1:PATIENTCLASS")
+	Do message.SetValueAt("MMPC", "PV1:ASSIGNEDPATIENTLOCATION")
+	Do message.SetValueAt("HOLLAND", "PV1:ADMITSOURCE")
+	
+	Do $$$AssertStatusOK(..Sender.SendTCP("127.0.0.1","435",message))
+	
+	Do ..WaitForCallInterval("HL7TCPService")
+	
+	Do ..AssertMessageTrace("HL7TCPService","MsgRouter","HL7TCPOperation")
+]]></Implementation>
+</Method>
+
+<Method name="TestTCPMessageFromGrandRapids">
+<Description><![CDATA[
+<ul>
+<li>Creates a HL7 message that has "GRAND RAPIDS" as the Admit Source which means it should be sent to the "HL7FTPOperation" configuration item.</li>
+<li>Using the <class>UnitTest.HL7Sender</class> we send the message over TCP to the "HL7TCPService".</li>
+<li>We wait for the call interval for that configuration item.</li>
+<li>Lastly, we assert the path the message took through the production; HL7FileService -> MsgRouter -> HL7FTPOperation</li>
+</ul>
+<example>
+Set message = ..CreateMessage("2.1:ADT_A12")
+Do message.SetValueAt("2.1", "MSH:VERSIONID")
+Do message.SetValueAt("ADT^A12", "MSH:MESSAGETYPE")
+Do message.SetValueAt("A12", "EVN:EVENTTYPECODE")
+Do message.SetValueAt("323", "PID:SETIDPATIENTID")
+Do message.SetValueAt("Justin", "PID:PATIENTNAME")
+Do message.SetValueAt("Adult", "PV1:PATIENTCLASS")
+Do message.SetValueAt("MMPC", "PV1:ASSIGNEDPATIENTLOCATION")
+Do message.SetValueAt("GRAND RAPIDS", "PV1:ADMITSOURCE")
+ 
+Do $$$AssertStatusOK(..Sender.SendTCP("127.0.0.1","435",message))
+ 
+Do ..WaitForCallInterval("HL7TCPService")
+ 
+Do ..AssertMessageTrace("HL7TCPService","MsgRouter","HL7FTPOperation")
+
+</example>]]></Description>
+<Implementation><![CDATA[
+	Set message = ..CreateMessage("2.1:ADT_A12")
+	Do message.SetValueAt("2.1", "MSH:VERSIONID")
+	Do message.SetValueAt("ADT^A12", "MSH:MESSAGETYPE")
+	Do message.SetValueAt("A12", "EVN:EVENTTYPECODE")
+	Do message.SetValueAt("323", "PID:SETIDPATIENTID")
+	Do message.SetValueAt("Justin", "PID:PATIENTNAME")
+	Do message.SetValueAt("Adult", "PV1:PATIENTCLASS")
+	Do message.SetValueAt("MMPC", "PV1:ASSIGNEDPATIENTLOCATION")
+	Do message.SetValueAt("GRAND RAPIDS", "PV1:ADMITSOURCE")
+	
+	Do $$$AssertStatusOK(..Sender.SendTCP("127.0.0.1","435",message))
+	
+	Do ..WaitForCallInterval("HL7TCPService")
+	
+	Do ..AssertMessageTrace("HL7TCPService","MsgRouter","HL7FTPOperation")
+]]></Implementation>
+</Method>
+
+<Method name="TestFileMessage">
+<Description><![CDATA[
+<ul>
+<li>Creates a basic HL7 message that should make it through the router and to the "HL7FileOperation".</li>
+<li>Generates a temp filename with a "hl7" suffix that will be written out to a directory that the "HL7FileService" is monitoring.</li>
+<li>Writes the message out to the directory using the <class>UnitTest.HL7Sender</class> helper.</li>
+<li>Lastly, we assert the path the message took through the production; HL7FileService -> MsgRouter -> HL7FileOperation.</li>
+</ul>
+<example>
+Set message = ..CreateMessage("2.1:ORM_O01")
+Do message.SetValueAt("2.1", "MSH:VERSIONID")
+Do message.SetValueAt("ORM^O01", "MSH:MESSAGETYPE")
+Do message.SetValueAt("O01", "EVN:EVENTTYPECODE")
+ 
+Set outputFile = ..HL7InputDir_"/"_##class(%IO.FileStream).NewTempFilename("hl7")
+Do $$$AssertStatusOK(..Sender.SendFile(outputFile,message))
+	 
+Do ..WaitForCallInterval("HL7FileService")
+ 	
+Do ..AssertMessageTrace("HL7FileService","MsgRouter","HL7FileOperation")
+ 
+</example>]]></Description>
+<Implementation><![CDATA[
+	Set message = ..CreateMessage("2.1:ORM_O01")
+	Do message.SetValueAt("2.1", "MSH:VERSIONID")
+	Do message.SetValueAt("ORM^O01", "MSH:MESSAGETYPE")
+	Do message.SetValueAt("O01", "EVN:EVENTTYPECODE")
+
+	Set outputFile = ..HL7InputDir_"/"_##class(%IO.FileStream).NewTempFilename("hl7")
+	Do $$$AssertStatusOK(..Sender.SendFile(outputFile,message))
+	
+	Do ..WaitForCallInterval("HL7FileService")
+	
+	Do ..AssertMessageTrace("HL7FileService","MsgRouter","HL7FileOperation")
+]]></Implementation>
+</Method>
+
+<Method name="OnAfterAllTests">
+<Description><![CDATA[
+<ol>
+<li>Restore router validation to its original state.</li>
+<li>Restore file service's path to its orginal state.</li>
+<li>Stop the production.</li>
+<li>Remove test directory.</li>
+</ul>
+<example>
+Do ..ChangeSetting(,"MsgRouter","Validation","dm-z")
+Do ..ChangeSetting(,"HL7FileService","FilePath", "/tmp/")
+	 
+Do ..CleanUpDirectory(..MainDir, 1)
+Do ..ForceStopProduction()
+	 	
+Quit $$$OK
+</example>]]></Description>
+<ReturnType>%Status</ReturnType>
+<Implementation><![CDATA[
+	Do ..ChangeSetting(,"MsgRouter","Validation","dm-z")
+	Do ..ChangeSetting(,"HL7FileService","FilePath", "/tmp/")
+	
+	Do ..CleanUpDirectory(..MainDir, 1)
+	Do ..ForceStopProduction()
+		
+	Quit $$$OK
+]]></Implementation>
+</Method>
+
+<Method name="WaitForCallInterval">
+<Internal>1</Internal>
+<FormalSpec>configItem</FormalSpec>
+<Implementation><![CDATA[
+	Do ..GetSetting(..#PRODUCTION, configItem, "CallInterval", .value)
+	Hang value
+]]></Implementation>
+</Method>
+
+<Method name="AssertMessageTrace">
+<Internal>1</Internal>
+<FormalSpec>service:%String,processor:%String,operation:%String</FormalSpec>
+<Implementation><![CDATA[
+	&sql(SELECT TOP 1 SessionID, TargetConfigName INTO :SessionID, :ServiceTarget
+		 FROM Ens.MessageHeader
+		 WHERE SourceConfigName = :service
+		 ORDER BY %ID,TimeCreated)
+		 
+	Do:SQLCODE=100 $$$AssertNotTrue(1, "Could not find service '"_service_"' in messages")
+	Do:SQLCODE=0 $$$AssertEquals(processor, ServiceTarget, "Expected: '"_service_"' -> '"_processor_"' Was: '"_service_"' -> '"_ServiceTarget_"'")
+	
+	&sql(SELECT TOP 1 TargetConfigName INTO :ProcessorTarget
+	 	 FROM Ens.MessageHeader
+	 	 WHERE SourceConfigName = :processor AND SessionID = :SessionID
+	 	 ORDER BY %ID,TimeCreated)
+	 
+	Do:SQLCODE=100 $$$AssertNotTrue(1, "Could not find processor '"_processor_"' in messages")
+	Do:SQLCODE=0 $$$AssertEquals(operation, ProcessorTarget, "Expected: '"_processor_"' -> '"_operation_"' Was: '"_processor_"' -> '"_ProcessorTarget_"'")
+]]></Implementation>
+</Method>
+</Class>
+
+
+<Class name="Ensemble.Tests.SettingsTest">
+<Super>UnitTest.ProductionTestHelper</Super>
+<TimeChanged>61439,46621.764077</TimeChanged>
+<TimeCreated>61430,58106.083022</TimeCreated>
+
+<Parameter name="PRODUCTION">
+<Description>
+Production that is being tested.</Description>
+<Default>Ensemble.Production</Default>
+</Parameter>
+
+<Method name="TestFileService">
+<Description><![CDATA[
+Tests various settings for the 'HL7FileService' configuration item.
+<example>
+Set config = "HL7FileService"
+	 
+Do ..AssertGeneralSetting(config, "Enabled", 1)
+	 
+Do ..AssertSetting(config, "Framing", "Flexible")
+Do ..AssertSetting(config, "TargetConfigNames", "MsgRouter")
+Do ..AssertSetting(config, "LocalFacilityApplication", "ISC:EnsembleHL7")
+Do ..AssertSetting(config, "FilePath", "/tmp/")
+Do ..AssertSetting(config, "FileSpec", "*")
+Do ..AssertSetting(config, "ArchivePath", "")
+Do ..AssertSetting(config, "WorkPath", "")
+Do ..AssertSetting(config, "MessageSchemaCategory", "2.1")
+</example>]]></Description>
+<Implementation><![CDATA[
+	Set config = "HL7FileService"
+	
+	Do ..AssertGeneralSetting(config, "Enabled", 1)
+	
+	Do ..AssertSetting(config, "Framing", "Flexible")
+	Do ..AssertSetting(config, "TargetConfigNames", "MsgRouter")
+	Do ..AssertSetting(config, "LocalFacilityApplication", "ISC:EnsembleHL7")
+	Do ..AssertSetting(config, "FilePath", "/tmp/")
+	Do ..AssertSetting(config, "FileSpec", "*")
+	Do ..AssertSetting(config, "ArchivePath", "")
+	Do ..AssertSetting(config, "WorkPath", "")
+	Do ..AssertSetting(config, "MessageSchemaCategory", "2.1")
+]]></Implementation>
+</Method>
+
+<Method name="TestTCPService">
+<Description><![CDATA[
+Tests various settings for the 'HL7TCPService' configuration item.
+<example>
+Set config = "HL7TCPService"
+	 
+Do ..AssertGeneralSetting(config, "Enabled", 1)
+	 
+Do ..AssertSetting(config, "Framing", "Flexible")
+Do ..AssertSetting(config, "TargetConfigNames", "MsgRouter")
+Do ..AssertSetting(config, "LocalFacilityApplication", "ISC:EnsembleHL7")
+Do ..AssertSetting(config, "SearchTableClass", "EnsLib.HL7.SearchTable")
+Do ..AssertSetting(config, "Port", "435")
+Do ..AssertSetting(config, "AllowedIPAddresses", "")
+Do ..AssertSetting(config, "MessageSchemaCategory", "2.1")
+</example>]]></Description>
+<Implementation><![CDATA[
+	Set config = "HL7TCPService"
+	
+	Do ..AssertGeneralSetting(config, "Enabled", 1)
+	
+	Do ..AssertSetting(config, "Framing", "Flexible")
+	Do ..AssertSetting(config, "TargetConfigNames", "MsgRouter")
+	Do ..AssertSetting(config, "LocalFacilityApplication", "ISC:EnsembleHL7")
+	Do ..AssertSetting(config, "SearchTableClass", "EnsLib.HL7.SearchTable")
+	Do ..AssertSetting(config, "Port", "435")
+	Do ..AssertSetting(config, "AllowedIPAddresses", "")
+	Do ..AssertSetting(config, "MessageSchemaCategory", "2.1")
+]]></Implementation>
+</Method>
+
+<Method name="TestMsgRouter">
+<Description><![CDATA[
+Tests various settings for the 'MsgRouter' configuration item.
+<example>
+Set config = "MsgRouter"
+	 
+Do ..AssertGeneralSetting(config, "Enabled", 1)
+	 	
+Do ..AssertSetting(config, "BusinessRuleName", "Ensemble.RoutingRule")
+Do ..AssertSetting(config, "Validation", "dm-z")
+</example>]]></Description>
+<Implementation><![CDATA[
+	Set config = "MsgRouter"
+	
+	Do ..AssertGeneralSetting(config, "Enabled", 1)
+		
+	Do ..AssertSetting(config, "BusinessRuleName", "Ensemble.RoutingRule")
+	Do ..AssertSetting(config, "Validation", "dm-z")
+]]></Implementation>
+</Method>
+
+<Method name="TestFileOperation">
+<Description><![CDATA[
+Tests various settings for the 'HL7FileOperation' configuration item.
+<example>
+Set config = "HL7FileOperation"
+ 	
+Do ..AssertGeneralSetting(config, "Enabled", 1)
+ 	
+Do ..AssertSetting(config, "Filename", "Processed_%f")
+Do ..AssertSetting(config, "FilePath", "/tmp/")
+Do ..AssertSetting(config, "Separators", "|^~\&")
+</example>]]></Description>
+<Implementation><![CDATA[
+	Set config = "HL7FileOperation"
+	
+	Do ..AssertGeneralSetting(config, "Enabled", 1)
+		
+	Do ..AssertSetting(config, "Filename", "Processed_%f")
+	Do ..AssertSetting(config, "FilePath", "/tmp/")
+	Do ..AssertSetting(config, "Separators", "|^~\&")
+]]></Implementation>
+</Method>
+
+<Method name="TestTCPOperation">
+<Description><![CDATA[
+Tests various settings for the 'HL7FileOperation' configuration item.
+<example>
+Set config = "HL7FileOperation"
+ 	
+Do ..AssertGeneralSetting(config, "Enabled", 1)
+ 	
+Do ..AssertSetting(config, "Filename", "Processed_%f")
+Do ..AssertSetting(config, "FilePath", "/tmp/")
+Do ..AssertSetting(config, "Separators", "|^~\&")
+</example>]]></Description>
+<Implementation><![CDATA[
+	Set config = "HL7TCPOperation"
+	
+	Do ..AssertGeneralSetting(config, "Enabled", 1)
+		
+	Do ..AssertSetting(config, "Framing", "MLLP")
+	Do ..AssertSetting(config, "IPAddress", "localhost")
+	Do ..AssertSetting(config, "Port", "9323")
+	Do ..AssertSetting(config, "Separators", "|^~\&")
+]]></Implementation>
+</Method>
+
+<Method name="TestFTPOperation">
+<Description><![CDATA[
+Tests various settings for the 'HL7FTPOperation' configuration item.
+<example>
+	Set config = "HL7FTPOperation"
+	 
+Do ..AssertGeneralSetting(config, "Enabled", 1)
+	 	
+Do ..AssertSetting(config, "Filename", "Processed_%f")
+Do ..AssertSetting(config, "FilePath", "/hl7/")
+Do ..AssertSetting(config, "Separators", "|^~\&")
+</example>]]></Description>
+<Implementation><![CDATA[
+	Set config = "HL7FTPOperation"
+	
+	Do ..AssertGeneralSetting(config, "Enabled", 1)
+		
+	Do ..AssertSetting(config, "Filename", "Processed_%f")
+	Do ..AssertSetting(config, "FilePath", "/hl7/")
+	Do ..AssertSetting(config, "Separators", "|^~\&")
+]]></Implementation>
+</Method>
+</Class>
+
+
+<Class name="Ensemble.Tests.TestHelper">
+<Abstract>1</Abstract>
+<Super>UnitTest.TestHelper</Super>
+<TimeChanged>61430,71321.623275</TimeChanged>
+<TimeCreated>61430,35475.760397</TimeCreated>
+</Class>
+
+
+<Class name="Ensemble.Tests.TestSuite">
+<Super>UnitTest.TestSuite</Super>
+<TimeChanged>61436,53412.503876</TimeChanged>
+<TimeCreated>61430,71273.670563</TimeCreated>
+
+<Parameter name="DESTROYTESTLOGS">
+<Default>1</Default>
+</Parameter>
+
+<Method name="Package">
+<ClassMethod>1</ClassMethod>
+<ReturnType>%String</ReturnType>
+<Implementation><![CDATA[	Quit "Ensemble.Tests"
+]]></Implementation>
+</Method>
+</Class>
+
+
+<Class name="UnitTest.ContinuousIntegrationEmailAlert">
+<Description><![CDATA[
+The <b>UnitTest.ContinuousIntegrationEmailAlert</b> is a custom
+email alert that sends test failure alerts with a link to the test
+report for the current namespace.]]></Description>
+<Super>EnsLib.EMail.AlertOperation</Super>
+<TimeChanged>61430,29707</TimeChanged>
+<TimeCreated>61347,56809.564574</TimeCreated>
+
+<Method name="OnMessage">
+<FormalSpec>pRequest:Ens.AlertRequest,*pResponse:Ens.Response</FormalSpec>
+<ReturnType>%Status</ReturnType>
+<Implementation><![CDATA[
+	Set $ZT="Trap",tSC=$$$OK
+	do {
+		Set tMailMessage=##class(%Net.MailMessage).%New()
+		Set tMailMessage.Subject="Test Failure alert from "_$$$SystemName_":"_pRequest.SourceConfigName
+		set tMailMessage.Charset="iso-8859-1"
+		Set tSC=tMailMessage.TextData.WriteLine("One or more tests failed during the test run. Click the test report link to see the failures.") 
+		Set tSC=tMailMessage.TextData.WriteLine("")
+		Set port=$get(^%SYS("WebServer","Port"),8972)
+		Set host = "ensdev"
+		Set link = "http://"_host_":"_port_"/csp/"_$ZConvert($ZNSPACE, "l")_"/%25UnitTest.Report.cls?NS="_##class(%CSP.Page).EscapeURL($znspace)
+		Set tSC=tMailMessage.TextData.WriteLine(link) Quit:$$$ISERR(tSC)
+		Set tSC=tMailMessage.TextData.WriteLine("")
+		Set tSC=tMailMessage.TextData.WriteLine("Alert Error:")
+		Set tSC=tMailMessage.TextData.WriteLine(pRequest.AlertText)
+		Set tSC=..Adapter.SendMail(tMailMessage)
+	} while (0)
+Exit
+	Quit tSC
+Trap
+	Set $ZT="",tSC=$$$EnsSystemError
+	Goto Exit
+]]></Implementation>
+</Method>
+</Class>
+
+
+<Class name="UnitTest.ContinuousIntegrationService">
+<Description><![CDATA[
+The <b>UnitTest.ContinuousIntegrationServce</b> is an Ensemble
+business service that uses the base <b>Ens.InboundAdapter</b>
+to execute a suite of tests perodically using Ensemble's built
+in production environment.
+<p>The <var>TestSuite</var> and <var>PurgeTestLogs</var> properties
+are available as settings to configure which test suite to execute
+and when to purge the unit tests logs.]]></Description>
+<Super>Ens.BusinessService</Super>
+<TimeChanged>61430,29707</TimeChanged>
+<TimeCreated>61347,33136.704715</TimeCreated>
+
+<Parameter name="ADAPTER">
+<Default>Ens.InboundAdapter</Default>
+</Parameter>
+
+<Property name="Namespace">
+<Type>%String</Type>
+</Property>
+
+<Property name="TestSuite">
+<Description>
+The name of the test suite that runs all of the test cases.</Description>
+<Type>%String</Type>
+</Property>
+
+<Property name="PurgeTestLogs">
+<Description>
+Purge the test log after N number of logs. Specify -1 or any null string to never purge.</Description>
+<Type>%Integer</Type>
+<InitialExpression>500</InitialExpression>
+</Property>
+
+<Parameter name="SETTINGS">
+<Default>Namespace,TestSuite,PurgeTestLogs</Default>
+</Parameter>
+
+<Method name="OnProcessInput">
+<Description><![CDATA[
+Callback purges the unit test log perodically and executes
+the suite of tests.
+<p>Returns whether the tests suite failed or passed.]]></Description>
+<FormalSpec>pInput:%RegisteredObject,pOutput:%RegisteredObject</FormalSpec>
+<ReturnType>%Status</ReturnType>
+<Implementation><![CDATA[
+	If ..Namespace '= "" {
+		zn ..Namespace
+	}
+	
+	Do ..PurgeLogs()
+	Quit $ZOBJCLASSMETHOD(..TestSuite, "RunTests")
+]]></Implementation>
+</Method>
+
+<Method name="PurgeLogs">
+<Private>1</Private>
+<Implementation><![CDATA[
+	Quit:..PurgeTestLogs=-1
+	
+	If ##class(UnitTest.TestSuite).GetTestCount() > ..PurgeTestLogs
+	{
+		Do ##class(%UnitTest.Manager).PurgeLog()
+	}
+]]></Implementation>
+</Method>
+</Class>
+
+
+<Class name="UnitTest.DataTypeWrapper">
+<Description>
+</Description>
+<Super>%RegisteredObject</Super>
+<TimeChanged>61430,29707</TimeChanged>
+<TimeCreated>61347,30222.559236</TimeCreated>
+
+<Property name="value">
+<Private>1</Private>
+</Property>
+
+<Method name="GetValue">
+<Implementation><![CDATA[	Quit ..value
+]]></Implementation>
+</Method>
+
+<Method name="SetValue">
+<FormalSpec>value</FormalSpec>
+<Implementation><![CDATA[	Set ..value = value
+]]></Implementation>
+</Method>
+</Class>
+
+
+<Class name="UnitTest.HL7Reader">
+<IncludeCode>EnsHL7</IncludeCode>
+<Super>EnsLib.HL7.Service.Standard</Super>
+<TimeChanged>61436,58160.985666</TimeChanged>
+<TimeCreated>61436,52603.13722</TimeCreated>
+
+<Property name="Parser">
+<Type>EnsLib.HL7.Parser</Type>
+</Property>
+
+<Method name="%OnNew">
+<FormalSpec>initstring</FormalSpec>
+<ReturnType>%Status</ReturnType>
+<Implementation><![CDATA[
+	Set ..Parser = ##class(EnsLib.HL7.Parser).%New(##this)
+	Quit $$$OK
+]]></Implementation>
+</Method>
+
+<Method name="ReadFile">
+<FormalSpec>fileName:%String,*message:EnsLib.HL7.Message,docType:%String="",inbound=1,framing=1</FormalSpec>
+<ReturnType>%Status</ReturnType>
+<Implementation><![CDATA[
+	Set stream = ##class(%IO.FileStream).%New()
+	Do stream.Open(fileName,"R",,,.tSC)
+	Quit:$$$ISERR(tSC) tSC
+	Set tSC = ..Parser.ParseIOStream(stream,.message,inbound,framing)
+	Set message.DocType = docType
+	Do stream.Close()
+	Kill stream
+	Quit tSC
+]]></Implementation>
+</Method>
+
+<Method name="ReadStream">
+<FormalSpec>stream:%IO.I.CharacterStream,*message:EnsLib.HL7.Message,docType:%String="",inbound=1,framing=1</FormalSpec>
+<ReturnType>%Status</ReturnType>
+<Implementation><![CDATA[
+	Set tSC =..Parser.ParseIOStream(stream,.message,inbound,framing)
+	Set message.DocType = docType
+	Quit tSC
+]]></Implementation>
+</Method>
+</Class>
+
+
+<Class name="UnitTest.HL7Sender">
+<Super>EnsLib.HL7.Util.IOFraming,%RegisteredObject</Super>
+<TimeChanged>61436,60224.055629</TimeChanged>
+<TimeCreated>61436,52676.868827</TimeCreated>
+
+<Method name="SendTCP">
+<FormalSpec><![CDATA[host:%String,port:%String,message:EnsLib.HL7.Message,separators="|^~\&"]]></FormalSpec>
+<ReturnType>%Status</ReturnType>
+<Implementation><![CDATA[
+	Set stream = ##class(%IO.Socket).%New()
+	Do stream.Open(host, port,5,.tSC)
+	Quit:$$$ISERR(tSC) tSC
+	Set tSC = ..Send(stream, message, separators) Do stream.Close()
+	Quit tSC
+]]></Implementation>
+</Method>
+
+<Method name="SendFile">
+<FormalSpec><![CDATA[file:%String,message:EnsLib.HL7.Message,separators="|^~\&"]]></FormalSpec>
+<ReturnType>%Status</ReturnType>
+<Implementation><![CDATA[
+	Set stream = ##class(%IO.FileStream).%New()
+	Do stream.Open(file, "E",,,.tSC)
+	Quit:$$$ISERR(tSC) tSC
+	Set tSC = ..Send(stream, message, separators) Do stream.Close()
+	Quit tSC
+]]></Implementation>
+</Method>
+
+<Method name="Send">
+<FormalSpec>stream:%IO.I.CharacterStream,message:EnsLib.HL7.Message,separators:%String</FormalSpec>
+<ReturnType>%Status</ReturnType>
+<Implementation><![CDATA[	Quit ..OutputFramedToIOStream(stream,message,separators,,,,)
+]]></Implementation>
+</Method>
+</Class>
+
+
+<Class name="UnitTest.ProductionTestHelper">
+<Description>
+</Description>
+<Abstract>1</Abstract>
+<ProcedureBlock>1</ProcedureBlock>
+<Super>%UnitTest.TestProduction,UnitTest.TestRunner</Super>
+<TimeChanged>61438,54948.766185</TimeChanged>
+<TimeCreated>61367,37066.748997</TimeCreated>
+
+<Parameter name="PRODUCTION">
+<Default>NULL</Default>
+</Parameter>
+
+<Method name="AssertSetting">
+<FormalSpec>Config:%String,Setting:%String,ExpectedValue:%String</FormalSpec>
+<Implementation><![CDATA[
+	Do ..GetSetting(..#PRODUCTION, Config, Setting, .actualValue)
+	Do $$$AssertEquals(ExpectedValue, actualValue, """"_Setting_""" setting for configuration "_Config_" - Expected: "_ExpectedValue_" Was: "_actualValue)
+]]></Implementation>
+</Method>
+
+<Method name="AssertGeneralSetting">
+<FormalSpec>Config:%String,Setting:%String,ExpectedValue:%String</FormalSpec>
+<Implementation><![CDATA[
+		 
+	Set configItem = ..GetConfigItem(Config)
+	
+	If configItem="" {
+		Do $$$AssertNotTrue(1, "Config Item was not found")
+	}
+	Else {
+		Do $$$AssertEquals(ExpectedValue, $zobjproperty(configItem, Setting), "Setting '"_Setting_"' Expected: "_ExpectedValue_" Got: "_$zobjproperty(configItem, Setting))	
+	}
+]]></Implementation>
+</Method>
+
+<Method name="TestControl">
+<ReturnType>%Status</ReturnType>
+<Implementation><![CDATA[
+	
+	Quit $$$OK
+]]></Implementation>
+</Method>
+
+<Method name="SendRequestTo">
+<FormalSpec>Config:%String,Request:%Persistent,Source:%String="",MaxWait=1</FormalSpec>
+<Implementation><![CDATA[
+	Set configItem = ..GetConfigItem(Config)
+	Set target = $zobjclassmethod(configItem.ClassName, "%New", Config)
+	
+	If Source'="" {
+		Do Request.%Save()
+		Set MessageId = Request.%Id()
+		Set MessageClass = Request.%ClassName(1)
+		
+		Do target.SendRequestAsync(Config, Request, 0)
+		
+		Hang MaxWait
+		
+		&sql(SELECT TOP 1 ID INTO :Id
+			 FROM Ens.MessageHeader
+			 WHERE TargetConfigName = :Config
+			 AND MessageBodyId = :MessageId
+			 AND MessageBodyClassName = :MessageClass
+			 ORDER BY ID DESC)
+		
+		Do $$$AssertStatusOK(##class(Ens.MessageHeader).NewDuplicatedMessage(.newHeader,Id,,,Source))
+		Do $$$AssertStatusOK(##class(Ens.MessageHeader).ResendMessage(newHeader.MessageId()))
+		
+		Hang MaxWait
+	}
+	Else {
+		Do target.SendRequestSync(Config, Request, .Response)
+	}
+]]></Implementation>
+</Method>
+
+<Method name="AssertDidNotRoute">
+<FormalSpec>ruleName:%String,ruleNumber:%String</FormalSpec>
+<Implementation><![CDATA[
+	Do ..GetMostRecentRuleLog(ruleName, .log)
+	If $Get(log) = ""
+	{
+		Do $$$AssertTrue(0,  "Could not find routing rule log for rule '"_ruleName_"'")
+	}
+	Else
+	{
+		Do $$$AssertNotEquals(ruleNumber, log.Reason, "Should not have executed "_ruleNumber)
+	}
+]]></Implementation>
+</Method>
+
+<Method name="AssertRoute">
+<FormalSpec>ruleName:%String,ruleNumber:%String,transform:%String="",operation:%String="",index:%String=1</FormalSpec>
+<Implementation><![CDATA[
+	Do ..GetMostRecentRuleLog(ruleName, .log)
+
+	If $Get(log) = ""
+	{
+		Do $$$AssertTrue(0, "Could not find routing rule log for rule '"_ruleName_"'")
+	}
+	Else
+	{		
+		Set rule = $LG($LISTFROMSTRING(log.Reason, ","), index)
+		
+		Set rules = $LISTFROMSTRING(log.ReturnValue, ";")
+		Set result = $LISTFROMSTRING($LISTGET(rules, index), ":")
+		
+		Do $$$AssertEquals(ruleNumber, rule, "Rule Was: "_rule)
+		Do $$$AssertEquals(transform, $LG(result, 3), "Transform Was: "_$LG(result, 3))
+		Do $$$AssertEquals(operation, $LG(result, 2), "Operation Was: "_$LG(result, 2))
+	}
+]]></Implementation>
+</Method>
+
+<Method name="GetMostRecentRuleLog">
+<FormalSpec>theRuleName:%String,*log:Ens.Rule.RuleLog</FormalSpec>
+<Implementation><![CDATA[
+	&sql(SELECT TOP 1 ID INTO :Id
+		 FROM Ens_Rule.RuleLog
+		 WHERE RuleName = :theRuleName
+		 AND Reason IS NOT NULL
+		 AND ReturnValue IS NOT NULL
+		 ORDER BY ID,TimeExecuted DESC)
+		 	
+	Quit:$Get(Id)="" "" 
+	Set log = ##class(Ens.Rule.RuleLog).%OpenId(Id)
+]]></Implementation>
+</Method>
+
+<Method name="ForceStopProduction">
+<Implementation><![CDATA[
+	Do ..GetMacros(.Macro)
+	Set s = ##class(Ens.Director).GetProductionStatus(.tProductionName,.tState)
+	If $G(tState)'=Macro("eProductionStateStopped") {
+		Do $$$LogMessage("Ensemble is not stopped")
+		Do $$$LogMessage("Trying to stop production '"_$G(tProductionName)_"'")
+		Do ##class(Ens.Director).StopProduction()
+		Set s = ..WaitForState(Macro("eProductionStateStopped"))
+		If 's {
+			Do $$$LogMessage("Forcing production to stop")
+			Set t0 = $ZH
+			Do ##class(Ens.Director).StopProduction(,1)
+			Hang ..#MAXWAIT-(($ZH-t0-.5)\1) // Wait remining number of seconds until ..#MAXWAIT minus 1
+			Do ##class(Ens.Director).CleanProduction(1)
+			Set s = ..WaitForState(Macro("eProductionStateStopped"))
+		}
+		Do ##class(Ens.Director).CleanProduction(1)
+		Set r = $$$AssertStatusOK(s, "Verifying Ensemble is now stopped'")
+		If 'r Quit 0 
+	}
+]]></Implementation>
+</Method>
+
+<Method name="CreateMessage">
+<FormalSpec>docType:%String</FormalSpec>
+<ReturnType>EnsLib.HL7.Message</ReturnType>
+<Implementation><![CDATA[
+	Set message = ##class(EnsLib.HL7.Message).%New()
+	Set message.DocType = docType
+	Quit message
+]]></Implementation>
+</Method>
+
+<Method name="EnableDisableConfig">
+<FormalSpec>configName:%String,enabled:%Boolean=1</FormalSpec>
+<ReturnType>%Status</ReturnType>
+<Implementation><![CDATA[
+	Set status = "Disabling"
+	Set:enabled=1 status = "Enabling"
+	
+	Quit ##class(Ens.Director).EnableConfigItem(configName, enabled)
+]]></Implementation>
+</Method>
+
+<Method name="GetConfigItem">
+<FormalSpec>Config:%String</FormalSpec>
+<Private>1</Private>
+<ReturnType>Ens.Config.Item</ReturnType>
+<Implementation><![CDATA[
+	Set production = ..#PRODUCTION
+	
+	&sql(SELECT ID 
+		 INTO :ConfigID
+		 FROM Ens_Config.Item
+		 WHERE Production=:production AND Name=:Config)
+		 
+	Quit ##class(Ens.Config.Item).%OpenId(ConfigID)
+]]></Implementation>
+</Method>
+</Class>
+
+
+<Class name="UnitTest.Stub">
+<Description>
+</Description>
+<Super>%RegisteredObject</Super>
+<TimeChanged>61430,29707</TimeChanged>
+<TimeCreated>61347,30183.159825</TimeCreated>
+
+<Property name="invocationCounts">
+<Type>%ArrayOfDataTypes</Type>
+</Property>
+
+<Property name="arguments">
+<Type>%ArrayOfObjects</Type>
+</Property>
+
+<Property name="returnValues">
+<Type>%ArrayOfObjects</Type>
+</Property>
+
+<Method name="%OnNew">
+<FormalSpec>initvalue</FormalSpec>
+<ReturnType>%Status</ReturnType>
+<Implementation><![CDATA[
+	Set ..invocationCounts = ##class(%ArrayOfDataTypes).%New()
+	Set ..arguments = ##class(%ArrayOfObjects).%New()
+	Set ..returnValues = ##class(%ArrayOfObjects).%New()
+	
+	Quit $$$OK
+]]></Implementation>
+</Method>
+
+<Method name="Stub">
+<FormalSpec>Method:%String,ReturnValue</FormalSpec>
+<Implementation><![CDATA[
+	Set wrapper = ##class(DataTypeWrapper).%New()
+	Do wrapper.SetValue(ReturnValue)
+	Do ..returnValues.SetAt(wrapper, Method)
+]]></Implementation>
+</Method>
+
+<Method name="%DispatchMethod">
+<FormalSpec>Method:%String,Args...</FormalSpec>
+<Implementation><![CDATA[
+	Do ..Invocation(Method)
+	Set arguments = ##class(%ListOfObjects).%New()
+	
+	For i = 1:1:$Get(Args, 0)
+	{
+		Set value = $Get(Args(i), "")
+		If $IsObject(value)
+		{
+			Do arguments.Insert(value)
+		}
+		Else
+		{
+			Set wrapper = ##class(DataTypeWrapper).%New()
+			Do wrapper.SetValue(value)
+			Do arguments.Insert(wrapper)
+		}
+	}
+	
+	Do ..arguments.SetAt(arguments, Method_..invocationCounts.GetAt(Method))
+	
+	Quit:$IsObject(..returnValues.GetAt(Method)) ..returnValues.GetAt(Method).GetValue()	
+	Quit ""
+]]></Implementation>
+</Method>
+
+<Method name="InvocationCount">
+<FormalSpec>Method:%String</FormalSpec>
+<ReturnType>%Integer</ReturnType>
+<Implementation><![CDATA[
+	Set count = ..invocationCounts.GetAt(Method)
+	Set:count="" count = 0
+	Quit count
+]]></Implementation>
+</Method>
+
+<Method name="ArgsForMethod">
+<FormalSpec>Method:%String,Count:%Integer=1</FormalSpec>
+<ReturnType>%ListOfObjects</ReturnType>
+<Implementation><![CDATA[
+	Set args = ..arguments.GetAt(Method_Count)
+	Quit:args'="" args	
+	Quit ""
+]]></Implementation>
+</Method>
+
+<Method name="FirstArgument">
+<FormalSpec>Method:%String,Count:%Integer=1</FormalSpec>
+<ReturnType>%RegisteredObject</ReturnType>
+<Implementation><![CDATA[
+	Set args = ..arguments.GetAt(Method_Count)
+	Quit:args'="" args.GetAt(1)	
+	Quit ""
+]]></Implementation>
+</Method>
+
+<Method name="Invocation">
+<FormalSpec>name:%String</FormalSpec>
+<Implementation><![CDATA[
+	Set invocationCount = ..invocationCounts.GetAt(name)
+	Set invocationCount = invocationCount + 1
+	Do ..invocationCounts.SetAt(invocationCount, name)
+]]></Implementation>
+</Method>
+</Class>
+
+
+<Class name="UnitTest.TestHelper">
+<Description>
+A test case that contains helper methods that allows it to run
+its tests from Studio or the Command Line. </Description>
+<Abstract>1</Abstract>
+<Super>%UnitTest.TestCase,UnitTest.TestRunner</Super>
+<TimeChanged>61430,29707</TimeChanged>
+<TimeCreated>61313,40113.921402</TimeCreated>
+
+<Method name="AssertPropertyDefinition">
+<FormalSpec>ClassName:%String,PropertyName:%String,Definition:%String,Value</FormalSpec>
+<Implementation><![CDATA[
+	Set classDefinition = ##class(%Library.ClassDefinition).%OpenId(ClassName)
+	Set properties = classDefinition.Properties
+	
+	Set foundProperty = ""
+	For i=1:1:properties.Size
+	{
+		Set property = properties.GetAt(i)
+		Set:property.Name=PropertyName foundProperty = property
+	}
+	
+	If foundProperty
+	{
+		Set gotValue = $zobjproperty(foundProperty, Definition)
+		Do $$$AssertEquals(Value, gotValue, "Value was: "_gotValue)
+	}
+	Else
+	{
+		Do $$$AssertTrue(0, "Property does not exist: "_PropertyName)
+	}
+]]></Implementation>
+</Method>
+
+<Method name="AssertMessageMapping">
+<FormalSpec>className:%String,type:%String,action:%String,index:%Integer=1</FormalSpec>
+<Implementation><![CDATA[
+	Do ##class(Ens.Util.XML.Reader).ObjectsFromXData(.items, className, "MessageMap", "Ens.Config.MessageMap")
+	If items="" {
+		Do $$$AssertNotEquals("", items, "No mappings found")
+	} Elseif items.Size < index {
+		Do $$$AssertTrue(items.Size >= index, "Could not find mapping for given index '"_index_"'")
+	} Else {
+		Do $$$AssertEquals(type, items.GetAt(index).MessageType)
+		Do $$$AssertEquals(action, items.GetAt(index).ActionMethod)
+	}
+]]></Implementation>
+</Method>
+</Class>
+
+
+<Class name="UnitTest.TestRunner">
+<Description>
+</Description>
+<Super>%RegisteredObject</Super>
+<TimeChanged>61430,29707</TimeChanged>
+<TimeCreated>61370,58332.223321</TimeCreated>
+
+<Method name="RunTestCase">
+<ClassMethod>1</ClassMethod>
+<FormalSpec>class:%String</FormalSpec>
+<Private>1</Private>
+<Implementation><![CDATA[	do ##class(%UnitTest.Manager).RunTest(class_":"_class, "/noload/norecursive")
+]]></Implementation>
+</Method>
+
+<Method name="RunTests">
+<Description>
+Runs all of the tests in the test case.</Description>
+<ClassMethod>1</ClassMethod>
+<Implementation><![CDATA[	do ..RunTestCase(..%ClassName(1))
+]]></Implementation>
+</Method>
+
+<Method name="Run">
+<ClassMethod>1</ClassMethod>
+<Implementation><![CDATA[	do ..RunTests()
+]]></Implementation>
+</Method>
+</Class>
+
+
+<Class name="UnitTest.TestSuite">
+<Description><![CDATA[
+The <b>UnitTest.TestSuite</b> collects and executes a set of test cases in a particular
+package.]]></Description>
+<Abstract>1</Abstract>
+<Super>%RegisteredObject</Super>
+<TimeChanged>61436,54915.085765</TimeChanged>
+<TimeCreated>61318,29605.415285</TimeCreated>
+
+<Parameter name="DESTROYTESTLOGS">
+<Description>
+Determines whether to destroy the unit test log before the suite is run.</Description>
+<Default>0</Default>
+</Parameter>
+
+<Method name="Package">
+<Description>
+Abstract method that should return the name of the package 
+where the test cases are located.</Description>
+<Abstract>1</Abstract>
+<ClassMethod>1</ClassMethod>
+<ReturnType>%String</ReturnType>
+</Method>
+
+<Method name="Tests">
+<Description><![CDATA[
+Returns a list of test cases based on what is returned
+from the <method>Package</method> class method.]]></Description>
+<ClassMethod>1</ClassMethod>
+<Implementation><![CDATA[
+	Do $system.OBJ.GetPackageList(.classList, ..Package())
+	Set class = ""
+	Set testList = ""
+	
+	For
+	{
+		Set class = $ORDER(classList(class))
+		Quit:class=""
+		
+		If $$issubclassof^%occCompile(class,"%UnitTest.TestCase")
+		   && '##class(%Dictionary.ClassDefinition).%OpenId(class).Abstract
+		{
+			If testList = ""
+			{
+				Set testList = class
+			}
+			Else
+			{
+				Set testList = testList_","_class
+			}
+		}	
+	}
+	
+	Quit $LISTFROMSTRING(testList)
+]]></Implementation>
+</Method>
+
+<Method name="RunTests">
+<Description><![CDATA[
+Runs all of the tests in a particular package.
+<p>Returns whether the tests passed or failed.]]></Description>
+<ClassMethod>1</ClassMethod>
+<ReturnType>%Status</ReturnType>
+<Implementation><![CDATA[
+	
+	Kill:..#DESTROYTESTLOGS=1 ^|$ZNSPACE|UnitTestLog
+	
+	Set tests = ..Tests()
+	Quit:$LISTLENGTH(tests)=0 $$$OK
+	
+	Set failureCount = 0	
+			
+	For i = 1:1:$LISTLENGTH(tests) {
+		Do ..RunTest($LISTGET(tests, i))
+		Set testCount = ..GetTestCount()
+		Set passed = ##class(%UnitTest.Report).IsSuccess($ZNSPACE, testCount, $O(^|$ZNSPACE|UnitTestLog(testCount,"")))
+		Set:passed=0 failureCount = failureCount + 1
+
+	}
+
+	If failureCount > 0
+	{
+		Quit $$$ERR(failureCount_" Test(s) Failed!")
+	}
+	
+	Quit $$$OK
+]]></Implementation>
+</Method>
+
+<Method name="Run">
+<Description><![CDATA[
+Alias to <method>RunTests</method>]]></Description>
+<ClassMethod>1</ClassMethod>
+<ReturnType>%Status</ReturnType>
+<Implementation><![CDATA[	Quit ..RunTests()
+]]></Implementation>
+</Method>
+
+<Method name="GetTestCount">
+<Description><![CDATA[
+Returns the number of tests in the <b>^UnitTestLog</b> for the
+current namespace.]]></Description>
+<ClassMethod>1</ClassMethod>
+<ReturnType>%Integer</ReturnType>
+<Implementation><![CDATA[
+	Set index = ""
+
+	While $ORDER(^|$ZNSPACE|UnitTestLog(index))
+	{
+		Set index = $ORDER(^|$ZNSPACE|UnitTestLog(index))
+	}
+	
+	Set:index="" index=0
+	Quit index
+]]></Implementation>
+</Method>
+
+<Method name="RunTest">
+<ClassMethod>1</ClassMethod>
+<FormalSpec>testspec:%String</FormalSpec>
+<Private>1</Private>
+<ReturnType>%Status</ReturnType>
+<Implementation><![CDATA[
+	set suite = testspec_":"_testspec
+	quit ##class(%UnitTest.Manager).RunTest(suite, "/noload/norecursive")
+]]></Implementation>
+</Method>
+</Class>
+</Export>

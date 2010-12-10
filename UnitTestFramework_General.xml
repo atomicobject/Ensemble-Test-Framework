@@ -1,0 +1,1447 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Export generator="Cache" version="22" zv="Cache for UNIX (Apple Mac OS X for x86) 2008.2 (Build 526U)" ts="2009-03-12 15:16:32">
+<Project name="DEVCON_GEN" LastModified="2009-03-12 14:56:21" Target="##class(Tests.TestSuite).Run()" TargetType="0">
+  <Items>
+    <ProjectItem name="DataModel.Person" type="CLS"/>
+    <ProjectItem name="External.LegacyData" type="CLS"/>
+    <ProjectItem name="Operation.PersonDataWriter" type="CLS"/>
+    <ProjectItem name="Operation.PersonFileOperation" type="CLS"/>
+    <ProjectItem name="Production.Production" type="CLS"/>
+    <ProjectItem name="Service.PersonRequestBuilder" type="CLS"/>
+    <ProjectItem name="Service.PersonService" type="CLS"/>
+    <ProjectItem name="Tests.LegacyConversionTest" type="CLS"/>
+    <ProjectItem name="Tests.PersonDataWriterTest" type="CLS"/>
+    <ProjectItem name="Tests.PersonFileOperationTest" type="CLS"/>
+    <ProjectItem name="Tests.PersonRequestBuilderTest" type="CLS"/>
+    <ProjectItem name="Tests.PersonTest" type="CLS"/>
+    <ProjectItem name="Tests.SettingsTest" type="CLS"/>
+    <ProjectItem name="Tests.TestSuite" type="CLS"/>
+    <ProjectItem name="UnitTest.ContinuousIntegrationEmailAlert" type="CLS"/>
+    <ProjectItem name="UnitTest.ContinuousIntegrationService" type="CLS"/>
+    <ProjectItem name="UnitTest.DataTypeWrapper" type="CLS"/>
+    <ProjectItem name="UnitTest.ProductionTestHelper" type="CLS"/>
+    <ProjectItem name="UnitTest.Stub" type="CLS"/>
+    <ProjectItem name="UnitTest.TestHelper" type="CLS"/>
+    <ProjectItem name="UnitTest.TestRunner" type="CLS"/>
+    <ProjectItem name="UnitTest.TestSuite" type="CLS"/>
+  </Items>
+</Project>
+
+
+<Class name="DataModel.Person">
+<Super>Ens.Request</Super>
+<TimeChanged>61432,42359.163571</TimeChanged>
+<TimeCreated>61432,39350.127191</TimeCreated>
+
+<Property name="FirstName">
+<Type>%String</Type>
+</Property>
+
+<Property name="LastName">
+<Type>%String</Type>
+</Property>
+
+<Property name="Address">
+<Type>%String</Type>
+</Property>
+
+<Property name="City">
+<Type>%String</Type>
+</Property>
+
+<Property name="ZipCode">
+<Type>%String</Type>
+<Parameter name="PATTERN" value="5N"/>
+</Property>
+
+<Property name="State">
+<Type>%String</Type>
+</Property>
+
+<Property name="SSN">
+<Type>%String</Type>
+<Parameter name="PATTERN" value="3N1&quot;-&quot;2N1&quot;-&quot;4N"/>
+</Property>
+
+<Property name="Sex">
+<Type>%String</Type>
+<Parameter name="PATTERN" value="1(1&quot;Male&quot;,1&quot;Female&quot;)"/>
+</Property>
+
+<Storage name="Default">
+<Type>%Library.CacheStorage</Type>
+<DefaultData>PersonDefaultData</DefaultData>
+<Data name="PersonDefaultData">
+<Structure>listnode</Structure>
+<Subscript>"Person"</Subscript>
+<Value name="1">
+<Value>FirstName</Value>
+</Value>
+<Value name="2">
+<Value>LastName</Value>
+</Value>
+<Value name="3">
+<Value>Address</Value>
+</Value>
+<Value name="4">
+<Value>ZipCode</Value>
+</Value>
+<Value name="5">
+<Value>State</Value>
+</Value>
+<Value name="6">
+<Value>SSN</Value>
+</Value>
+<Value name="7">
+<Value>Sex</Value>
+</Value>
+<Value name="8">
+<Value>City</Value>
+</Value>
+</Data>
+</Storage>
+</Class>
+
+
+<Class name="External.LegacyData">
+<Super>%Persistent,%Populate</Super>
+<TimeChanged>61432,51761.242889</TimeChanged>
+<TimeCreated>61432,39530.410003</TimeCreated>
+
+<Property name="FullName">
+<Type>%String</Type>
+<Parameter name="POPSPEC" value=".FullName()"/>
+</Property>
+
+<Property name="FullAddress">
+<Type>%String</Type>
+<Parameter name="POPSPEC" value=".FullAddress()"/>
+</Property>
+
+<Property name="Sex">
+<Type>%String</Type>
+<Parameter name="POPSPEC" value=".Sex()"/>
+</Property>
+
+<Property name="SocialSecurityNumber">
+<Type>%String</Type>
+<Parameter name="POPSPEC" value="SSN()"/>
+</Property>
+
+<Method name="FullName">
+<ReturnType>%String</ReturnType>
+<Implementation><![CDATA[	Quit ##class(%PopulateUtils).LastName()_","_##class(%PopulateUtils).FirstName()
+]]></Implementation>
+</Method>
+
+<Method name="FullAddress">
+<ReturnType>%String</ReturnType>
+<Implementation><![CDATA[	Quit ##class(%PopulateUtils).Street()_","_##class(%PopulateUtils).City()_","_##class(%PopulateUtils).USZip()_","_##class(%PopulateUtils).USState()
+]]></Implementation>
+</Method>
+
+<Method name="Sex">
+<ReturnType>%String</ReturnType>
+<Implementation><![CDATA[	Quit $LG($LB("Male","Female"), $RANDOM(2) + 1)
+]]></Implementation>
+</Method>
+
+<Storage name="Default">
+<Type>%Library.CacheStorage</Type>
+<DataLocation>^External.LegacyDataD</DataLocation>
+<DefaultData>LegacyDataDefaultData</DefaultData>
+<IdLocation>^External.LegacyDataD</IdLocation>
+<IndexLocation>^External.LegacyDataI</IndexLocation>
+<StreamLocation>^External.LegacyDataS</StreamLocation>
+<Data name="LegacyDataDefaultData">
+<Structure>listnode</Structure>
+<Subscript/>
+<Value name="1">
+<Value>%%CLASSNAME</Value>
+</Value>
+<Value name="2">
+<Value>FullName</Value>
+</Value>
+<Value name="3">
+<Value>FullAddress</Value>
+</Value>
+<Value name="4">
+<Value>Sex</Value>
+</Value>
+<Value name="5">
+<Value>SocialSecurityNumber</Value>
+</Value>
+</Data>
+<Property name="FullAddress">
+</Property>
+<Property name="FullName">
+</Property>
+<Property name="Sex">
+</Property>
+<Property name="SocialSecurityNumber">
+</Property>
+</Storage>
+</Class>
+
+
+<Class name="Operation.PersonDataWriter">
+<Super>%RegisteredObject</Super>
+<TimeChanged>61432,46871.407117</TimeChanged>
+<TimeCreated>61432,40845.678605</TimeCreated>
+
+<Method name="Write">
+<FormalSpec>adapter:EnsLib.File.OutboundAdapter,person:Ens.Request,fileName:%String</FormalSpec>
+<ReturnType>%Status</ReturnType>
+<Implementation><![CDATA[
+	Set properties = $LB("FirstName", "LastName", "Address", "State", "City","ZipCode","Sex","SSN")
+	Set line = ""
+	For i=1:1:$LISTLENGTH(properties) {
+		Set value = $zobjmethod(person,$LG(properties, i)_"Get")
+		Set:line'="" line = line_","_value
+		Set:line="" line = value
+	}
+	
+	Quit adapter.PutLine(fileName, line)
+]]></Implementation>
+</Method>
+</Class>
+
+
+<Class name="Operation.PersonFileOperation">
+<ProcedureBlock>1</ProcedureBlock>
+<Super>Ens.BusinessOperation</Super>
+<TimeChanged>61432,49193.348609</TimeChanged>
+<TimeCreated>61432,40468.113375</TimeCreated>
+
+<Property name="FileName">
+</Property>
+
+<Parameter name="ADAPTER">
+<Default>EnsLib.File.OutboundAdapter</Default>
+</Parameter>
+
+<Parameter name="INVOCATION">
+<Default>Queue</Default>
+</Parameter>
+
+<Parameter name="SETTINGS">
+<Default>FileName</Default>
+</Parameter>
+
+<Property name="personDataWriter">
+<Type>Operation.PersonDataWriter</Type>
+</Property>
+
+<Method name="OnInit">
+<ReturnType>%Status</ReturnType>
+<Implementation><![CDATA[
+	Set ..personDataWriter = ##class(Operation.PersonDataWriter).%New()
+	Quit $$$OK
+]]></Implementation>
+</Method>
+
+<Method name="WritePerson">
+<FormalSpec>pRequest:DataModel.Person,*pResponse:Ens.Response</FormalSpec>
+<ReturnType>%Status</ReturnType>
+<Implementation><![CDATA[	Quit ..personDataWriter.Write(..Adapter, pRequest, ..FileName)
+]]></Implementation>
+</Method>
+
+<XData name="MessageMap">
+<Data><![CDATA[
+<MapItems>
+	<MapItem MessageType="DataModel.Person"> 
+		<Method>WritePerson</Method>
+	</MapItem>
+</MapItems>
+]]></Data>
+</XData>
+</Class>
+
+
+<Class name="Production.Production">
+<Super>Ens.Production</Super>
+<TimeChanged>61432,47645.010824</TimeChanged>
+<TimeCreated>61432,38348.909926</TimeCreated>
+
+<XData name="ProductionDefinition">
+<Data><![CDATA[
+<Production Name="Production.Production" LogGeneralTraceEvents="false">
+  <Description></Description>
+  <ActorPoolSize>2</ActorPoolSize>
+  <Item Name="LegacyPersonService" Category="" ClassName="Service.PersonService" PoolSize="1" Enabled="true" Foreground="false" InactivityTimeout="0" Comment="" LogTraceEvents="false" Schedule="">
+    <Setting Target="Host" Name="AlertGracePeriod">0</Setting>
+    <Setting Target="Host" Name="AlertOnError">0</Setting>
+    <Setting Target="Host" Name="ArchiveIO">0</Setting>
+    <Setting Target="Adapter" Name="Query">SELECT * FROM External.LegacyData</Setting>
+    <Setting Target="Adapter" Name="DeleteQuery"></Setting>
+    <Setting Target="Adapter" Name="KeyFieldName">ID</Setting>
+    <Setting Target="Adapter" Name="Parameters"></Setting>
+    <Setting Target="Adapter" Name="CallInterval">5</Setting>
+    <Setting Target="Adapter" Name="DSN">EXTERNALDB</Setting>
+    <Setting Target="Adapter" Name="Credentials">EXTERNALCREDS</Setting>
+    <Setting Target="Adapter" Name="StayConnected">-1</Setting>
+    <Setting Target="Adapter" Name="ConnectTimeout">5</Setting>
+  </Item>
+  <Item Name="PersonFileOperation" Category="" ClassName="Operation.PersonFileOperation" PoolSize="1" Enabled="true" Foreground="false" InactivityTimeout="0" Comment="" LogTraceEvents="false" Schedule="">
+    <Setting Target="Host" Name="FileName">People.csv</Setting>
+    <Setting Target="Host" Name="AlertRetryGracePeriod">0</Setting>
+    <Setting Target="Host" Name="RetryInterval">5</Setting>
+    <Setting Target="Host" Name="FailureTimeout">15</Setting>
+    <Setting Target="Host" Name="AlertOnError">0</Setting>
+    <Setting Target="Host" Name="ArchiveIO">0</Setting>
+    <Setting Target="Adapter" Name="FilePath">/tmp/</Setting>
+    <Setting Target="Adapter" Name="Overwrite">0</Setting>
+    <Setting Target="Adapter" Name="Charset">Default</Setting>
+    <Setting Target="Adapter" Name="OpenTimeout">5</Setting>
+  </Item>
+</Production>
+]]></Data>
+</XData>
+</Class>
+
+
+<Class name="Service.PersonRequestBuilder">
+<Super>%RegisteredObject</Super>
+<TimeChanged>61432,43136.805478</TimeChanged>
+<TimeCreated>61432,39785.001955</TimeCreated>
+
+<Method name="Build">
+<FormalSpec><![CDATA[&snapshot:EnsLib.SQL.Snapshot,*person:DataModel.Person]]></FormalSpec>
+<ReturnType>%Status</ReturnType>
+<Implementation><![CDATA[
+	Set fullName = $LISTFROMSTRING(snapshot.Get("FullName"))
+	Set fullAddress = $LISTFROMSTRING(snapshot.Get("FullAddress"))
+	
+	Set person = ##class(DataModel.Person).%New()
+	Set person.Address = $LG(fullAddress, 1)
+	Set person.City = $LG(fullAddress,2)
+	Set person.ZipCode = $LG(fullAddress,3)
+	Set person.State = $LG(fullAddress,4)
+	
+	Set person.FirstName = $LG(fullName,2)
+	Set person.LastName = $LG(fullName,1)
+	
+	Set person.Sex = snapshot.Get("Sex")
+	Set person.SSN = snapshot.Get("SocialSecurityNumber")
+	
+	Set tSC = person.%Save()
+	Kill:$$$ISERR(tSC) person
+	
+	Quit tSC
+]]></Implementation>
+</Method>
+</Class>
+
+
+<Class name="Service.PersonService">
+<ProcedureBlock>1</ProcedureBlock>
+<Super>Ens.BusinessService</Super>
+<TimeChanged>61432,40180.013101</TimeChanged>
+<TimeCreated>61432,38431.63152</TimeCreated>
+
+<Property name="personRequestBuilder">
+<Type>Service.PersonRequestBuilder</Type>
+</Property>
+
+<Parameter name="ADAPTER">
+<Default>EnsLib.SQL.InboundAdapter</Default>
+</Parameter>
+
+<Method name="OnInit">
+<ReturnType>%Status</ReturnType>
+<Implementation><![CDATA[
+	Set ..personRequestBuilder = ##class(Service.PersonRequestBuilder).%New()
+	Quit $$$OK
+]]></Implementation>
+</Method>
+
+<Method name="OnProcessInput">
+<FormalSpec>pInput:EnsLib.SQL.Snapshot,pOutput:%RegisteredObject</FormalSpec>
+<ReturnType>%Status</ReturnType>
+<Implementation><![CDATA[
+	Set tSC = ..personRequestBuilder.Build(.pInput, .person)
+	Do:$$$ISOK(tSC) ..SendRequestAsync("PersonFileOperation", person) 
+	Quit tSC
+]]></Implementation>
+</Method>
+</Class>
+
+
+<Class name="Tests.LegacyConversionTest">
+<Super>UnitTest.ProductionTestHelper</Super>
+<TimeChanged>61432,53595.230462</TimeChanged>
+<TimeCreated>61432,49929.950431</TimeCreated>
+
+<Parameter name="PRODUCTION">
+<Default>Production.Production</Default>
+</Parameter>
+
+<Method name="OnBeforeAllTests">
+<ReturnType>%Status</ReturnType>
+<Implementation><![CDATA[
+	Do ..ChangeSetting(,"PersonFileOperation","FilePath",##class(%SYS.System).TempDirectory())
+	
+	Do ..StartProduction()	
+	
+	Quit $$$OK
+]]></Implementation>
+</Method>
+
+<Method name="OnBeforeOneTest">
+<ReturnType>%Status</ReturnType>
+<Implementation><![CDATA[
+	Do ##class(Ens.MessageHeader).%KillExtent()
+	Do ##class(Ens.MessageBody).%KillExtent()
+	
+	Do ##class(DataModel.Person).%KillExtent()
+	Do ##class(External.LegacyData).%KillExtent()
+	
+	Do ##class(%File).Delete(..PeopleFilePath())
+	
+	Do ##class(EnsLib.SQL.InboundAdapter).ClearAllAppData("LegacyPersonService")
+	
+	Quit $$$OK
+]]></Implementation>
+</Method>
+
+<Method name="TestLegacyConversion">
+<Implementation><![CDATA[
+	Do ##class(External.LegacyData).Populate(2)
+	
+	Do ..WaitForCallInterval("LegacyPersonService")
+	
+	Do ..AssertMessageTrace("LegacyPersonService", "PersonFileOperation")
+	
+	Do ..AssertFileExists(..PeopleFilePath())
+	
+	Do ..LoadFileIntoStream(..PeopleFilePath(), .stream)
+	
+	Do ..AssertLineInStream(..LineFromRequestId(1), .stream)
+	
+	Do ..AssertLineInStream(..LineFromRequestId(2), .stream)
+	
+	Do $$$AssertTrue(stream.AtEnd)
+]]></Implementation>
+</Method>
+
+<Method name="LineFromRequestId">
+<FormalSpec>id:%String</FormalSpec>
+<ReturnType>%String</ReturnType>
+<Implementation><![CDATA[
+	Set request = ##class(DataModel.Person).%OpenId(id)
+	Quit:request="" ""
+	Quit request.FirstName_","_request.LastName_","_request.Address_","_request.State_","_request.City_","_request.ZipCode_","_request.Sex_","_request.SSN
+]]></Implementation>
+</Method>
+
+<Method name="OnAfterAllTests">
+<ReturnType>%Status</ReturnType>
+<Implementation><![CDATA[
+	Do ##class(External.LegacyData).%KillExtent()
+	Do ..ChangeSetting(,"PersonFileOperation","FilePath", "/tmp/")
+	Do ..ForceStopProduction()
+	Quit $$$OK
+]]></Implementation>
+</Method>
+
+<Method name="LoadFileIntoStream">
+<FormalSpec>fileName:%String,*stream:%FileCharacterStream</FormalSpec>
+<Implementation><![CDATA[
+	Set stream = ##class(%FileCharacterStream).%New()
+	Set stream.Filename = fileName
+]]></Implementation>
+</Method>
+
+<Method name="AssertFileExists">
+<FormalSpec>filePath:%String</FormalSpec>
+<Implementation><![CDATA[	Do $$$AssertTrue(##class(%File).Exists(filePath))
+]]></Implementation>
+</Method>
+
+<Method name="WaitForCallInterval">
+<FormalSpec>configItem</FormalSpec>
+<Implementation><![CDATA[
+	Do ..GetSetting(..#PRODUCTION, configItem, "CallInterval", .value)
+	Hang value
+]]></Implementation>
+</Method>
+
+<Method name="AssertLineInStream">
+<FormalSpec><![CDATA[expected:%String,&stream:%Library.FileCharacterStream]]></FormalSpec>
+<Implementation><![CDATA[
+	Do:stream.AtEnd $$$AssertNotTrue(1, "At the end of the file")
+	If 'stream.AtEnd {
+		Set line = stream.ReadLine()
+		Do $$$AssertEquals(expected, $TRANSLATE(line, $CHAR(13), ""), "Expected: '"_expected_"' Was: '"_line_"'")
+	}
+]]></Implementation>
+</Method>
+
+<Method name="PeopleFilePath">
+<ReturnType>%String</ReturnType>
+<Implementation><![CDATA[
+	Do ..GetSetting(..#PRODUCTION,"PersonFileOperation","FileName",.value)
+	Quit ##class(%SYS.System).TempDirectory()_"/"_value
+]]></Implementation>
+</Method>
+
+<Method name="AssertMessageTrace">
+<FormalSpec>service:%String,processorOrOperation:%String,operation:%String=""</FormalSpec>
+<Implementation><![CDATA[
+	&sql(SELECT TOP 1 SessionID, TargetConfigName INTO :SessionID, :ServiceTarget
+		 FROM Ens.MessageHeader
+		 WHERE SourceConfigName = :service
+		 ORDER BY %ID,TimeCreated)
+		 
+	
+	Do $$$AssertTrue($G(ServiceTarget)'="", "Could not find service '"_service_"' in messages")
+	Do:SQLCODE=0 $$$AssertEquals(processorOrOperation, ServiceTarget, "Expected: '"_service_"' -> '"_processorOrOperation_"' Was: '"_service_"' -> '"_ServiceTarget_"'")
+	
+	If operation'="" {
+		&sql(SELECT TOP 1 TargetConfigName INTO :processorOrOperationTarget
+		 	 FROM Ens.MessageHeader
+		 	 WHERE SourceConfigName = :processorOrOperation AND SessionID = :SessionID
+		 	 ORDER BY %ID,TimeCreated)
+	 
+		Do $$$AssertTrue($G(processorOrOperationTarget)'="", "Could not find processorOrOperation '"_processorOrOperation_"' in messages")
+		Do:SQLCODE=0 $$$AssertEquals(operation, processorOrOperationTarget, "Expected: '"_processorOrOperation_"' -> '"_operation_"' Was: '"_processorOrOperation_"' -> '"_processorOrOperationTarget_"'")
+	}
+]]></Implementation>
+</Method>
+</Class>
+
+
+<Class name="Tests.PersonDataWriterTest">
+<Super>UnitTest.TestHelper</Super>
+<TimeChanged>61432,46924.12955</TimeChanged>
+<TimeCreated>61432,40599.410644</TimeCreated>
+
+<Property name="target">
+<Type>Operation.PersonDataWriter</Type>
+</Property>
+
+<Property name="adapter">
+<Type>UnitTest.Stub</Type>
+</Property>
+
+<Method name="OnBeforeOneTest">
+<ReturnType>%Status</ReturnType>
+<Implementation><![CDATA[
+	Set ..target = ##class(Operation.PersonDataWriter).%New()
+	Set ..adapter = ##class(UnitTest.Stub).%New()
+	
+	Quit $$$OK
+]]></Implementation>
+</Method>
+
+<Method name="TestWritesPersonRequestOut">
+<Implementation><![CDATA[
+	Do ..adapter.Stub("PutLine", $$$OK)
+	Set person = ..CreateHappyPerson()
+	
+	Do $$$AssertStatusOK(..target.Write(..adapter, person, "Hello.txt"))
+	
+	Set line = "Justin,DeWind,123 Foo,MI,Holland,49301,Male,123-12-1234"
+	Do $$$AssertEquals(line, ..adapter.ArgsForMethod("PutLine").GetAt(2).GetValue())
+	Do $$$AssertEquals("Hello.txt", ..adapter.ArgsForMethod("PutLine").GetAt(1).GetValue())
+	Do $$$AssertEquals(1, ..adapter.InvocationCount("PutLine"))
+]]></Implementation>
+</Method>
+
+<Method name="TestWritesPersonError">
+<Implementation><![CDATA[
+	Do ..adapter.Stub("PutLine", $$$ERR("ouch"))
+	Set person = ..CreateHappyPerson()
+	
+	Do $$$AssertStatusNotOK(..target.Write(..adapter, person, "Hello.txt"))
+	
+	Do $$$AssertEquals(1, ..adapter.InvocationCount("PutLine"))
+]]></Implementation>
+</Method>
+
+<Method name="CreateHappyPerson">
+<ReturnType>DataModel.Person</ReturnType>
+<Implementation><![CDATA[
+	Set person = ##class(DataModel.Person).%New()
+	Set person.FirstName = "Justin"
+	Set person.LastName = "DeWind"
+	Set person.Address = "123 Foo"
+	Set person.Sex = "Male"
+	Set person.SSN = "123-12-1234"
+	Set person.State = "MI"
+	Set person.City = "Holland"
+	Set person.ZipCode = "49301"
+	
+	Quit person
+]]></Implementation>
+</Method>
+</Class>
+
+
+<Class name="Tests.PersonFileOperationTest">
+<Super>UnitTest.TestHelper</Super>
+<TimeChanged>61432,41368.653435</TimeChanged>
+<TimeCreated>61432,40680.595357</TimeCreated>
+
+<Method name="TestMessageMapping">
+<Implementation><![CDATA[	Do ..AssertMessageMapping("Operation.PersonFileOperation","DataModel.Person","WritePerson")
+]]></Implementation>
+</Method>
+</Class>
+
+
+<Class name="Tests.PersonRequestBuilderTest">
+<Super>UnitTest.TestHelper</Super>
+<TimeChanged>61432,43069.022903</TimeChanged>
+<TimeCreated>61432,40547.057192</TimeCreated>
+
+<Property name="target">
+<Type>Service.PersonRequestBuilder</Type>
+</Property>
+
+<Property name="snapshot">
+<Type>EnsLib.SQL.Snapshot</Type>
+</Property>
+
+<Method name="OnBeforeOneTest">
+<ReturnType>%Status</ReturnType>
+<Implementation><![CDATA[
+	Do ##class(DataModel.Person).%KillExtent()
+	
+	Set ..target = ##class(Service.PersonRequestBuilder).%New()
+	Set ..snapshot = ##class(EnsLib.SQL.Snapshot).%New()
+	Do ..snapshot.SetColNames("FullName", "FullAddress", "Sex", "SocialSecurityNumber")
+	
+	Quit $$$OK
+]]></Implementation>
+</Method>
+
+<Method name="TestBuildsPersonRequest">
+<Implementation><![CDATA[
+	Do ..snapshot.AddRow("DeWind,Justin","123 Foo Bar,Holland,49301,MI","Male","123-12-1234")
+	Do ..snapshot.Next()
+	Set snapshot = ..snapshot
+	
+	Do $$$AssertStatusOK(..target.Build(.snapshot,.person))
+	
+	Do $$$AssertEquals("DeWind", person.LastName)
+	Do $$$AssertEquals("Justin", person.FirstName)
+	Do $$$AssertEquals("123 Foo Bar", person.Address)
+	Do $$$AssertEquals("Holland", person.City)
+	Do $$$AssertEquals("49301", person.ZipCode)
+	Do $$$AssertEquals("MI", person.State)
+	Do $$$AssertEquals("Male", person.Sex)
+	Do $$$AssertEquals("123-12-1234", person.SSN)
+	Do $$$AssertTrue(person.%Id()'="")
+]]></Implementation>
+</Method>
+
+<Method name="TestBuildsPersonBadRow">
+<Implementation><![CDATA[
+	Do ..snapshot.AddRow("DeWind,Justin","123 Foo Bar,Holland,,MI","Male","sffasf")
+	Do ..snapshot.Next()
+	Set snapshot = ..snapshot
+	
+	Do $$$AssertStatusNotOK(..target.Build(.snapshot,.person))
+	
+	Do $$$AssertEquals("", $G(person))
+]]></Implementation>
+</Method>
+</Class>
+
+
+<Class name="Tests.PersonTest">
+<Super>UnitTest.TestHelper</Super>
+<TimeChanged>61432,54692.328112</TimeChanged>
+<TimeCreated>61432,36698.793109</TimeCreated>
+
+<Method name="OnBeforeOneTest">
+<ReturnType>%Status</ReturnType>
+<Implementation><![CDATA[
+	Do ##class(DataModel.Person).%KillExtent()
+	Quit $$$OK
+]]></Implementation>
+</Method>
+
+<Method name="TestFields">
+<Implementation><![CDATA[
+	
+	Set person = ..CreateHappyPerson()
+	Do $$$AssertStatusOK(person.%Save())
+	Do $$$AssertEquals(person, ##class(DataModel.Person).%OpenId(person.%Id()))
+]]></Implementation>
+</Method>
+
+<Method name="TestSSNValidation">
+<Implementation><![CDATA[
+	Set person = ..CreateHappyPerson()
+	Set person.SSN = "123-123-1234"
+	Do $$$AssertStatusNotOK(person.%Save())
+	Set person.SSN = "123-12-123"
+	Do $$$AssertStatusNotOK(person.%Save())
+	Set person.SSN = "12-12-1234"
+	Do $$$AssertStatusNotOK(person.%Save())
+	Set person.SSN = "12312-1234"
+	Do $$$AssertStatusNotOK(person.%Save())
+	Set person.SSN = "123-121234"
+	Do $$$AssertStatusNotOK(person.%Save())
+	Set person.SSN = "ABC-12-1234"
+	Do $$$AssertStatusNotOK(person.%Save())
+	Set person.SSN = "123-CD-1234"
+	Do $$$AssertStatusNotOK(person.%Save())
+	Set person.SSN = "123-12-EFGH"
+	Do $$$AssertStatusNotOK(person.%Save())
+	
+	Set person.SSN = "321-21-4321"
+	Do $$$AssertStatusOK(person.%Save())
+]]></Implementation>
+</Method>
+
+<Method name="TestZipValidation">
+<Implementation><![CDATA[
+	Set person = ..CreateHappyPerson()
+	Set person.ZipCode = "1234"
+	Do $$$AssertStatusNotOK(person.%Save())
+	Set person.ZipCode = "A1234"
+	Do $$$AssertStatusNotOK(person.%Save())
+	Set person.ZipCode = "12B34"
+	Do $$$AssertStatusNotOK(person.%Save())
+
+	Set person.ZipCode = "49506"
+	Do $$$AssertStatusOK(person.%Save())
+]]></Implementation>
+</Method>
+
+<Method name="TestSexValidation">
+<Implementation><![CDATA[
+	Set person = ..CreateHappyPerson()
+	Set person.Sex = "Neutral"
+	Do $$$AssertStatusNotOK(person.%Save())
+
+	Set person.Sex = "None"
+	Do $$$AssertStatusNotOK(person.%Save())
+	
+	Set person.Sex = "Male"
+	Do $$$AssertStatusOK(person.%Save())	
+	Set person.Sex = "Female"
+	Do $$$AssertStatusOK(person.%Save())
+]]></Implementation>
+</Method>
+
+<Method name="CreateHappyPerson">
+<ReturnType>DataModel.Person</ReturnType>
+<Implementation><![CDATA[
+	Set person = ##class(DataModel.Person).%New()
+	Set person.FirstName = "Justin"
+	Set person.LastName = "DeWind"
+	Set person.Address = "123 Foo"
+	Set person.Sex = "Male"
+	Set person.SSN = "123-12-1234"
+	Set person.State = "MI"
+	Set person.City = "Holland"
+	Set person.ZipCode = 49301	
+	Quit person
+]]></Implementation>
+</Method>
+</Class>
+
+
+<Class name="Tests.SettingsTest">
+<Super>UnitTest.ProductionTestHelper</Super>
+<TimeChanged>61432,47721.93678</TimeChanged>
+<TimeCreated>61432,41758.761788</TimeCreated>
+
+<Parameter name="PRODUCTION">
+<Default>Production.Production</Default>
+</Parameter>
+
+<Method name="TestPersonService">
+<Implementation><![CDATA[
+	Set config = "LegacyPersonService"
+	
+	Do ..AssertGeneralSetting(config, "Enabled", 1)
+	
+	Do ..AssertSetting(config, "Query", "SELECT * FROM External.LegacyData")
+	Do ..AssertSetting(config, "KeyFieldName", "ID")
+	Do ..AssertSetting(config, "DSN", "EXTERNALDB")
+	Do ..AssertSetting(config, "Credentials", "EXTERNALCREDS")
+]]></Implementation>
+</Method>
+
+<Method name="TestPersonOperation">
+<Implementation><![CDATA[
+	Set config = "PersonFileOperation"
+	
+	Do ..AssertGeneralSetting(config, "Enabled", 1)
+	
+	Do ..AssertSetting(config, "FileName", "People.csv")
+	Do ..AssertSetting(config, "FilePath", "/tmp/")
+	Do ..AssertSetting(config, "Overwrite", 0)
+]]></Implementation>
+</Method>
+</Class>
+
+
+<Class name="Tests.TestSuite">
+<Super>UnitTest.TestSuite</Super>
+<TimeChanged>61432,54856.585763</TimeChanged>
+<TimeCreated>61432,53509.871747</TimeCreated>
+
+<Parameter name="DESTROYTESTLOGS">
+<Default>1</Default>
+</Parameter>
+
+<Method name="Package">
+<ClassMethod>1</ClassMethod>
+<ReturnType>%String</ReturnType>
+<Implementation><![CDATA[	Quit "Tests"
+]]></Implementation>
+</Method>
+</Class>
+
+
+<Class name="UnitTest.ContinuousIntegrationEmailAlert">
+<Description><![CDATA[
+The <b>UnitTest.ContinuousIntegrationEmailAlert</b> is a custom
+email alert that sends test failure alerts with a link to the test
+report for the current namespace.]]></Description>
+<Super>EnsLib.EMail.AlertOperation</Super>
+<TimeChanged>61430,29707</TimeChanged>
+<TimeCreated>61347,56809.564574</TimeCreated>
+
+<Method name="OnMessage">
+<FormalSpec>pRequest:Ens.AlertRequest,*pResponse:Ens.Response</FormalSpec>
+<ReturnType>%Status</ReturnType>
+<Implementation><![CDATA[
+	Set $ZT="Trap",tSC=$$$OK
+	do {
+		Set tMailMessage=##class(%Net.MailMessage).%New()
+		Set tMailMessage.Subject="Test Failure alert from "_$$$SystemName_":"_pRequest.SourceConfigName
+		set tMailMessage.Charset="iso-8859-1"
+		Set tSC=tMailMessage.TextData.WriteLine("One or more tests failed during the test run. Click the test report link to see the failures.") 
+		Set tSC=tMailMessage.TextData.WriteLine("")
+		Set port=$get(^%SYS("WebServer","Port"),8972)
+		Set host = "ensdev"
+		Set link = "http://"_host_":"_port_"/csp/"_$ZConvert($ZNSPACE, "l")_"/%25UnitTest.Report.cls?NS="_##class(%CSP.Page).EscapeURL($znspace)
+		Set tSC=tMailMessage.TextData.WriteLine(link) Quit:$$$ISERR(tSC)
+		Set tSC=tMailMessage.TextData.WriteLine("")
+		Set tSC=tMailMessage.TextData.WriteLine("Alert Error:")
+		Set tSC=tMailMessage.TextData.WriteLine(pRequest.AlertText)
+		Set tSC=..Adapter.SendMail(tMailMessage)
+	} while (0)
+Exit
+	Quit tSC
+Trap
+	Set $ZT="",tSC=$$$EnsSystemError
+	Goto Exit
+]]></Implementation>
+</Method>
+</Class>
+
+
+<Class name="UnitTest.ContinuousIntegrationService">
+<Description><![CDATA[
+The <b>UnitTest.ContinuousIntegrationServce</b> is an Ensemble
+business service that uses the base <b>Ens.InboundAdapter</b>
+to execute a suite of tests perodically using Ensemble's built
+in production environment.
+<p>The <var>TestSuite</var> and <var>PurgeTestLogs</var> properties
+are available as settings to configure which test suite to execute
+and when to purge the unit tests logs.]]></Description>
+<Super>Ens.BusinessService</Super>
+<TimeChanged>61430,29707</TimeChanged>
+<TimeCreated>61347,33136.704715</TimeCreated>
+
+<Parameter name="ADAPTER">
+<Default>Ens.InboundAdapter</Default>
+</Parameter>
+
+<Property name="Namespace">
+<Type>%String</Type>
+</Property>
+
+<Property name="TestSuite">
+<Description>
+The name of the test suite that runs all of the test cases.</Description>
+<Type>%String</Type>
+</Property>
+
+<Property name="PurgeTestLogs">
+<Description>
+Purge the test log after N number of logs. Specify -1 or any null string to never purge.</Description>
+<Type>%Integer</Type>
+<InitialExpression>500</InitialExpression>
+</Property>
+
+<Parameter name="SETTINGS">
+<Default>Namespace,TestSuite,PurgeTestLogs</Default>
+</Parameter>
+
+<Method name="OnProcessInput">
+<Description><![CDATA[
+Callback purges the unit test log perodically and executes
+the suite of tests.
+<p>Returns whether the tests suite failed or passed.]]></Description>
+<FormalSpec>pInput:%RegisteredObject,pOutput:%RegisteredObject</FormalSpec>
+<ReturnType>%Status</ReturnType>
+<Implementation><![CDATA[
+	If ..Namespace '= "" {
+		zn ..Namespace
+	}
+	
+	Do ..PurgeLogs()
+	Quit $ZOBJCLASSMETHOD(..TestSuite, "RunTests")
+]]></Implementation>
+</Method>
+
+<Method name="PurgeLogs">
+<Private>1</Private>
+<Implementation><![CDATA[
+	Quit:..PurgeTestLogs=-1
+	
+	If ##class(UnitTest.TestSuite).GetTestCount() > ..PurgeTestLogs
+	{
+		Do ##class(%UnitTest.Manager).PurgeLog()
+	}
+]]></Implementation>
+</Method>
+</Class>
+
+
+<Class name="UnitTest.DataTypeWrapper">
+<Description>
+</Description>
+<Super>%RegisteredObject</Super>
+<TimeChanged>61430,29707</TimeChanged>
+<TimeCreated>61347,30222.559236</TimeCreated>
+
+<Property name="value">
+<Private>1</Private>
+</Property>
+
+<Method name="GetValue">
+<Implementation><![CDATA[	Quit ..value
+]]></Implementation>
+</Method>
+
+<Method name="SetValue">
+<FormalSpec>value</FormalSpec>
+<Implementation><![CDATA[	Set ..value = value
+]]></Implementation>
+</Method>
+</Class>
+
+
+<Class name="UnitTest.ProductionTestHelper">
+<Description>
+</Description>
+<Abstract>1</Abstract>
+<ProcedureBlock>1</ProcedureBlock>
+<Super>%UnitTest.TestProduction,UnitTest.TestRunner</Super>
+<TimeChanged>61430,57491.998056</TimeChanged>
+<TimeCreated>61367,37066.748997</TimeCreated>
+
+<Parameter name="PRODUCTION">
+<Default>NULL</Default>
+</Parameter>
+
+<Method name="AssertSetting">
+<FormalSpec>Config:%String,Setting:%String,ExpectedValue:%String</FormalSpec>
+<Implementation><![CDATA[
+	Do ..GetSetting(..#PRODUCTION, Config, Setting, .actualValue)
+	Do $$$AssertEquals(ExpectedValue, actualValue, """"_Setting_""" setting for configuration "_Config_" - Expected: "_ExpectedValue_" Was: "_actualValue)
+]]></Implementation>
+</Method>
+
+<Method name="AssertGeneralSetting">
+<FormalSpec>Config:%String,Setting:%String,ExpectedValue:%String</FormalSpec>
+<Implementation><![CDATA[
+		 
+	Set configItem = ..GetConfigItem(Config)
+	
+	If configItem="" {
+		Do $$$AssertNotTrue(1, "Config Item was not found")
+	}
+	Else {
+		Do $$$AssertEquals(ExpectedValue, $zobjproperty(configItem, Setting))	
+	}
+]]></Implementation>
+</Method>
+
+<Method name="TestControl">
+<ReturnType>%Status</ReturnType>
+<Implementation><![CDATA[
+	
+	Quit $$$OK
+]]></Implementation>
+</Method>
+
+<Method name="SendRequestTo">
+<FormalSpec>Config:%String,Request:%Persistent,Source:%String="",MaxWait=1</FormalSpec>
+<Implementation><![CDATA[
+	Set configItem = ..GetConfigItem(Config)
+	Set target = $zobjclassmethod(configItem.ClassName, "%New", Config)
+	
+	If Source'="" {
+		Do Request.%Save()
+		Set MessageId = Request.%Id()
+		Set MessageClass = Request.%ClassName(1)
+		
+		Do target.SendRequestAsync(Config, Request, 0)
+		
+		Hang MaxWait
+		
+		&sql(SELECT TOP 1 ID INTO :Id
+			 FROM Ens.MessageHeader
+			 WHERE TargetConfigName = :Config
+			 AND MessageBodyId = :MessageId
+			 AND MessageBodyClassName = :MessageClass
+			 ORDER BY ID DESC)
+		
+		Do $$$AssertStatusOK(##class(Ens.MessageHeader).NewDuplicatedMessage(.newHeader,Id,,,Source))
+		Do $$$AssertStatusOK(##class(Ens.MessageHeader).ResendMessage(newHeader.MessageId()))
+		
+		Hang MaxWait
+	}
+	Else {
+		Do target.SendRequestSync(Config, Request, .Response)
+	}
+]]></Implementation>
+</Method>
+
+<Method name="AssertDidNotRoute">
+<FormalSpec>ruleName:%String,ruleNumber:%String</FormalSpec>
+<Implementation><![CDATA[
+	Do ..GetMostRecentRuleLog(ruleName, .log)
+	If $Get(log) = ""
+	{
+		Do $$$AssertTrue(0,  "Could not find routing rule log for rule '"_ruleName_"'")
+	}
+	Else
+	{
+		Do $$$AssertNotEquals(ruleNumber, log.Reason, "Should not have executed "_ruleNumber)
+	}
+]]></Implementation>
+</Method>
+
+<Method name="AssertRoute">
+<FormalSpec>ruleName:%String,ruleNumber:%String,transform:%String="",operation:%String="",index:%String=1</FormalSpec>
+<Implementation><![CDATA[
+	Do ..GetMostRecentRuleLog(ruleName, .log)
+
+	If $Get(log) = ""
+	{
+		Do $$$AssertTrue(0, "Could not find routing rule log for rule '"_ruleName_"'")
+	}
+	Else
+	{		
+		Set rule = $LG($LISTFROMSTRING(log.Reason, ","), index)
+		
+		Set rules = $LISTFROMSTRING(log.ReturnValue, ";")
+		Set result = $LISTFROMSTRING($LISTGET(rules, index), ":")
+		
+		Do $$$AssertEquals(ruleNumber, rule, "Rule Was: "_rule)
+		Do $$$AssertEquals(transform, $LG(result, 3), "Transform Was: "_$LG(result, 3))
+		Do $$$AssertEquals(operation, $LG(result, 2), "Operation Was: "_$LG(result, 2))
+	}
+]]></Implementation>
+</Method>
+
+<Method name="GetMostRecentRuleLog">
+<FormalSpec>theRuleName:%String,*log:Ens.Rule.RuleLog</FormalSpec>
+<Implementation><![CDATA[
+	&sql(SELECT TOP 1 ID INTO :Id
+		 FROM Ens_Rule.RuleLog
+		 WHERE RuleName = :theRuleName
+		 AND Reason IS NOT NULL
+		 AND ReturnValue IS NOT NULL
+		 ORDER BY ID,TimeExecuted DESC)
+		 	
+	Quit:$Get(Id)="" "" 
+	Set log = ##class(Ens.Rule.RuleLog).%OpenId(Id)
+]]></Implementation>
+</Method>
+
+<Method name="ForceStopProduction">
+<Implementation><![CDATA[
+	Do ..GetMacros(.Macro)
+	Set s = ##class(Ens.Director).GetProductionStatus(.tProductionName,.tState)
+	If $G(tState)'=Macro("eProductionStateStopped") {
+		Do $$$LogMessage("Ensemble is not stopped")
+		Do $$$LogMessage("Trying to stop production '"_$G(tProductionName)_"'")
+		Do ##class(Ens.Director).StopProduction()
+		Set s = ..WaitForState(Macro("eProductionStateStopped"))
+		If 's {
+			Do $$$LogMessage("Forcing production to stop")
+			Set t0 = $ZH
+			Do ##class(Ens.Director).StopProduction(,1)
+			Hang ..#MAXWAIT-(($ZH-t0-.5)\1) // Wait remining number of seconds until ..#MAXWAIT minus 1
+			Do ##class(Ens.Director).CleanProduction(1)
+			Set s = ..WaitForState(Macro("eProductionStateStopped"))
+		}
+		Do ##class(Ens.Director).CleanProduction(1)
+		Set r = $$$AssertStatusOK(s, "Verifying Ensemble is now stopped'")
+		If 'r Quit 0 
+	}
+]]></Implementation>
+</Method>
+
+<Method name="CreateMessage">
+<FormalSpec>docType:%String</FormalSpec>
+<ReturnType>EnsLib.HL7.Message</ReturnType>
+<Implementation><![CDATA[
+	Set message = ##class(EnsLib.HL7.Message).%New()
+	Set message.DocType = docType
+	Quit message
+]]></Implementation>
+</Method>
+
+<Method name="EnableDisableConfig">
+<FormalSpec>configName:%String,enabled:%Boolean=1</FormalSpec>
+<ReturnType>%Status</ReturnType>
+<Implementation><![CDATA[
+	Set status = "Disabling"
+	Set:enabled=1 status = "Enabling"
+	
+	Quit ##class(Ens.Director).EnableConfigItem(configName, enabled)
+]]></Implementation>
+</Method>
+
+<Method name="GetConfigItem">
+<FormalSpec>Config:%String</FormalSpec>
+<Private>1</Private>
+<ReturnType>Ens.Config.Item</ReturnType>
+<Implementation><![CDATA[
+	Set production = ..#PRODUCTION
+	
+	&sql(SELECT ID 
+		 INTO :ConfigID
+		 FROM Ens_Config.Item
+		 WHERE Production=:production AND Name=:Config)
+		 
+	Quit ##class(Ens.Config.Item).%OpenId(ConfigID)
+]]></Implementation>
+</Method>
+</Class>
+
+
+<Class name="UnitTest.Stub">
+<Description>
+</Description>
+<Super>%RegisteredObject</Super>
+<TimeChanged>61430,29707</TimeChanged>
+<TimeCreated>61347,30183.159825</TimeCreated>
+
+<Property name="invocationCounts">
+<Type>%ArrayOfDataTypes</Type>
+</Property>
+
+<Property name="arguments">
+<Type>%ArrayOfObjects</Type>
+</Property>
+
+<Property name="returnValues">
+<Type>%ArrayOfObjects</Type>
+</Property>
+
+<Method name="%OnNew">
+<FormalSpec>initvalue</FormalSpec>
+<ReturnType>%Status</ReturnType>
+<Implementation><![CDATA[
+	Set ..invocationCounts = ##class(%ArrayOfDataTypes).%New()
+	Set ..arguments = ##class(%ArrayOfObjects).%New()
+	Set ..returnValues = ##class(%ArrayOfObjects).%New()
+	
+	Quit $$$OK
+]]></Implementation>
+</Method>
+
+<Method name="Stub">
+<FormalSpec>Method:%String,ReturnValue</FormalSpec>
+<Implementation><![CDATA[
+	Set wrapper = ##class(DataTypeWrapper).%New()
+	Do wrapper.SetValue(ReturnValue)
+	Do ..returnValues.SetAt(wrapper, Method)
+]]></Implementation>
+</Method>
+
+<Method name="%DispatchMethod">
+<FormalSpec>Method:%String,Args...</FormalSpec>
+<Implementation><![CDATA[
+	Do ..Invocation(Method)
+	Set arguments = ##class(%ListOfObjects).%New()
+	
+	For i = 1:1:$Get(Args, 0)
+	{
+		Set value = $Get(Args(i), "")
+		If $IsObject(value)
+		{
+			Do arguments.Insert(value)
+		}
+		Else
+		{
+			Set wrapper = ##class(DataTypeWrapper).%New()
+			Do wrapper.SetValue(value)
+			Do arguments.Insert(wrapper)
+		}
+	}
+	
+	Do ..arguments.SetAt(arguments, Method_..invocationCounts.GetAt(Method))
+	
+	Quit:$IsObject(..returnValues.GetAt(Method)) ..returnValues.GetAt(Method).GetValue()	
+	Quit ""
+]]></Implementation>
+</Method>
+
+<Method name="InvocationCount">
+<FormalSpec>Method:%String</FormalSpec>
+<ReturnType>%Integer</ReturnType>
+<Implementation><![CDATA[
+	Set count = ..invocationCounts.GetAt(Method)
+	Set:count="" count = 0
+	Quit count
+]]></Implementation>
+</Method>
+
+<Method name="ArgsForMethod">
+<FormalSpec>Method:%String,Count:%Integer=1</FormalSpec>
+<ReturnType>%ListOfObjects</ReturnType>
+<Implementation><![CDATA[
+	Set args = ..arguments.GetAt(Method_Count)
+	Quit:args'="" args	
+	Quit ""
+]]></Implementation>
+</Method>
+
+<Method name="FirstArgument">
+<FormalSpec>Method:%String,Count:%Integer=1</FormalSpec>
+<ReturnType>%RegisteredObject</ReturnType>
+<Implementation><![CDATA[
+	Set args = ..arguments.GetAt(Method_Count)
+	Quit:args'="" args.GetAt(1)	
+	Quit ""
+]]></Implementation>
+</Method>
+
+<Method name="Invocation">
+<FormalSpec>name:%String</FormalSpec>
+<Implementation><![CDATA[
+	Set invocationCount = ..invocationCounts.GetAt(name)
+	Set invocationCount = invocationCount + 1
+	Do ..invocationCounts.SetAt(invocationCount, name)
+]]></Implementation>
+</Method>
+</Class>
+
+
+<Class name="UnitTest.TestHelper">
+<Description>
+A test case that contains helper methods that allows it to run
+its tests from Studio or the Command Line. </Description>
+<Abstract>1</Abstract>
+<Super>%UnitTest.TestCase,UnitTest.TestRunner</Super>
+<TimeChanged>61430,29707</TimeChanged>
+<TimeCreated>61313,40113.921402</TimeCreated>
+
+<Method name="AssertPropertyDefinition">
+<FormalSpec>ClassName:%String,PropertyName:%String,Definition:%String,Value</FormalSpec>
+<Implementation><![CDATA[
+	Set classDefinition = ##class(%Library.ClassDefinition).%OpenId(ClassName)
+	Set properties = classDefinition.Properties
+	
+	Set foundProperty = ""
+	For i=1:1:properties.Size
+	{
+		Set property = properties.GetAt(i)
+		Set:property.Name=PropertyName foundProperty = property
+	}
+	
+	If foundProperty
+	{
+		Set gotValue = $zobjproperty(foundProperty, Definition)
+		Do $$$AssertEquals(Value, gotValue, "Value was: "_gotValue)
+	}
+	Else
+	{
+		Do $$$AssertTrue(0, "Property does not exist: "_PropertyName)
+	}
+]]></Implementation>
+</Method>
+
+<Method name="AssertMessageMapping">
+<FormalSpec>className:%String,type:%String,action:%String,index:%Integer=1</FormalSpec>
+<Implementation><![CDATA[
+	Do ##class(Ens.Util.XML.Reader).ObjectsFromXData(.items, className, "MessageMap", "Ens.Config.MessageMap")
+	If items="" {
+		Do $$$AssertNotEquals("", items, "No mappings found")
+	} Elseif items.Size < index {
+		Do $$$AssertTrue(items.Size >= index, "Could not find mapping for given index '"_index_"'")
+	} Else {
+		Do $$$AssertEquals(type, items.GetAt(index).MessageType)
+		Do $$$AssertEquals(action, items.GetAt(index).ActionMethod)
+	}
+]]></Implementation>
+</Method>
+</Class>
+
+
+<Class name="UnitTest.TestRunner">
+<Description>
+</Description>
+<Super>%RegisteredObject</Super>
+<TimeChanged>61430,29707</TimeChanged>
+<TimeCreated>61370,58332.223321</TimeCreated>
+
+<Method name="RunTestCase">
+<ClassMethod>1</ClassMethod>
+<FormalSpec>class:%String</FormalSpec>
+<Private>1</Private>
+<Implementation><![CDATA[	do ##class(%UnitTest.Manager).RunTest(class_":"_class, "/noload/norecursive")
+]]></Implementation>
+</Method>
+
+<Method name="RunTests">
+<Description>
+Runs all of the tests in the test case.</Description>
+<ClassMethod>1</ClassMethod>
+<Implementation><![CDATA[	do ..RunTestCase(..%ClassName(1))
+]]></Implementation>
+</Method>
+
+<Method name="Run">
+<ClassMethod>1</ClassMethod>
+<Implementation><![CDATA[	do ..RunTests()
+]]></Implementation>
+</Method>
+</Class>
+
+
+<Class name="UnitTest.TestSuite">
+<Description><![CDATA[
+The <b>UnitTest.TestSuite</b> collects and executes a set of test cases in a particular
+package.]]></Description>
+<Abstract>1</Abstract>
+<Super>%RegisteredObject</Super>
+<TimeChanged>61432,54887.88751</TimeChanged>
+<TimeCreated>61318,29605.415285</TimeCreated>
+
+<Parameter name="DESTROYTESTLOGS">
+<Description>
+Determines whether to destroy the unit test log before the suite is run.</Description>
+<Default>0</Default>
+</Parameter>
+
+<Method name="Package">
+<Description>
+Abstract method that should return the name of the package 
+where the test cases are located.</Description>
+<Abstract>1</Abstract>
+<ClassMethod>1</ClassMethod>
+<ReturnType>%String</ReturnType>
+</Method>
+
+<Method name="Tests">
+<Description><![CDATA[
+Returns a list of test cases based on what is returned
+from the <method>Package</method> class method.]]></Description>
+<ClassMethod>1</ClassMethod>
+<Implementation><![CDATA[
+	Do $system.OBJ.GetPackageList(.classList, ..Package())
+	Set class = ""
+	Set testList = ""
+	
+	For
+	{
+		Set class = $ORDER(classList(class))
+		Quit:class=""
+		
+		If $$issubclassof^%occCompile(class,"%UnitTest.TestCase")
+		   && '##class(%Dictionary.ClassDefinition).%OpenId(class).Abstract
+		{
+			If testList = ""
+			{
+				Set testList = class
+			}
+			Else
+			{
+				Set testList = testList_","_class
+			}
+		}	
+	}
+	
+	Quit $LISTFROMSTRING(testList)
+]]></Implementation>
+</Method>
+
+<Method name="RunTests">
+<Description><![CDATA[
+Runs all of the tests in a particular package.
+<p>Returns whether the tests passed or failed.]]></Description>
+<ClassMethod>1</ClassMethod>
+<ReturnType>%Status</ReturnType>
+<Implementation><![CDATA[
+	
+	Kill:..#DESTROYTESTLOGS=1 ^|$ZNSPACE|UnitTestLog
+	
+	Set tests = ..Tests()
+	Quit:$LISTLENGTH(tests)=0 $$$OK
+	
+	Set failureCount = 0	
+			
+	For i = 1:1:$LISTLENGTH(tests) {
+		Do ..RunTest($LISTGET(tests, i))
+		Set testCount = ..GetTestCount()
+		Set passed = ##class(%UnitTest.Report).IsSuccess($ZNSPACE, testCount, $O(^|$ZNSPACE|UnitTestLog(testCount,"")))
+		Set:passed=0 failureCount = failureCount + 1
+
+	}
+
+	If failureCount > 0
+	{
+		Quit $$$ERR(failureCount_" Test(s) Failed!")
+	}
+	
+	Quit $$$OK
+]]></Implementation>
+</Method>
+
+<Method name="Run">
+<Description><![CDATA[
+Alias to <method>RunTests</method>]]></Description>
+<ClassMethod>1</ClassMethod>
+<Implementation><![CDATA[	Quit ..RunTests()
+]]></Implementation>
+</Method>
+
+<Method name="GetTestCount">
+<Description><![CDATA[
+Returns the number of tests in the <b>^UnitTestLog</b> for the
+current namespace.]]></Description>
+<ClassMethod>1</ClassMethod>
+<ReturnType>%Integer</ReturnType>
+<Implementation><![CDATA[
+	Set index = ""
+
+	While $ORDER(^|$ZNSPACE|UnitTestLog(index))
+	{
+		Set index = $ORDER(^|$ZNSPACE|UnitTestLog(index))
+	}
+	
+	Set:index="" index=0
+	Quit index
+]]></Implementation>
+</Method>
+
+<Method name="RunTest">
+<ClassMethod>1</ClassMethod>
+<FormalSpec>testspec:%String</FormalSpec>
+<Private>1</Private>
+<ReturnType>%Status</ReturnType>
+<Implementation><![CDATA[
+	set suite = testspec_":"_testspec
+	quit ##class(%UnitTest.Manager).RunTest(suite, "/noload/norecursive")
+]]></Implementation>
+</Method>
+</Class>
+</Export>
