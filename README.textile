@@ -1,3 +1,7 @@
+h1. Maintenance
+
+This project is no longer actively maintained. If you're interested in taking over the project, email the author.
+
 h1. Ensemble Test Automation Framework
 
 We created a test automation framework for InterSystems' Ensemble productions when we were hired to develop conversions, HL7 interfaces and web apps with Ensemble. Our framework brings test-driven development (TDD) to the InterSystems tool chain of Cach&egrave; and Ensemble.
@@ -26,3 +30,9 @@ h3. More to Explore
 h3. Production Testing Demonstration Video
 
 The video can be watched in "high quality":http://www.youtube.com/watch?v=gmI70PTiiMo or directly but in lower resolution below.
+
+h2. Authors
+
+* Justin DeWind (dewind@atomicobject.com)
+* © 2009-2011 "Atomic Object":http://www.atomicobject.com
+* More Atomic Object "open source":http://www.atomicobject.com/pages/Software+Commons projects
