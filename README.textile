@@ -1,8 +1,4 @@
-h1. Maintenance
-
-This project is no longer actively maintained. If you're interested in taking over the project, email the author.
-
-h1. Ensemble Test Automation Framework
+h1.  Ensemble Test Automation Framework
 
 We created a test automation framework for InterSystems' Ensemble productions when we were hired to develop conversions, HL7 interfaces and web apps with Ensemble. Our framework brings test-driven development (TDD) to the InterSystems tool chain of Cach&egrave; and Ensemble.
 
@@ -17,7 +13,7 @@ Another significant benefit to test automation in this context is to ease the pa
 
 We've bundled an HL7 routing example, a simple general example application, and some documentation with the project to make it easier to get started. A rudimentary continuous integration task is included.
 
-We last used this framework with Ensemble version 2008.2.
+We last used this framework with Ensemble version 2016.1.
 
 h3. More to Explore
 
