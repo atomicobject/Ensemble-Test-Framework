@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<Export generator="Cache" version="25" zv="Cache for Windows (x86-32) 2015.1.1 (Build 505U)" ts="2016-06-17 08:31:20">
+<Export generator="Cache" version="25" zv="Cache for Windows (x86-32) 2015.1.1 (Build 505U)" ts="2016-06-17 13:16:41">
 
 
 <Class name="Atomic.UnitTest.ContinuousIntegrationEmailAlert">
@@ -443,40 +443,35 @@ A test case that contains helper methods that allows it to run
 its tests from Studio or the Command Line. </Description>
 <Abstract>1</Abstract>
 <Super>%UnitTest.TestCase,Atomic.UnitTest.TestRunner</Super>
-<TimeChanged>64086,29238.592987</TimeChanged>
+<TimeChanged>64086,47796.229105</TimeChanged>
 <TimeCreated>61313,40113.921402</TimeCreated>
 <Inheritance>right</Inheritance>
 
 <Method name="Ok">
-<ClassMethod>1</ClassMethod>
 <FormalSpec>pValue,pMessage=""</FormalSpec>
 <Implementation><![CDATA[	Do $$$AssertStatusOK(pValue, pMessage)
 ]]></Implementation>
 </Method>
 
 <Method name="NotOk">
-<ClassMethod>1</ClassMethod>
 <FormalSpec>pValue,pMessage=""</FormalSpec>
 <Implementation><![CDATA[	Do $$$AssertStatusNotOK(pValue, pMessage)
 ]]></Implementation>
 </Method>
 
 <Method name="True">
-<ClassMethod>1</ClassMethod>
 <FormalSpec>pValue,pMessage=""</FormalSpec>
 <Implementation><![CDATA[	Do $$$AssertTrue(pValue, pMessage)
 ]]></Implementation>
 </Method>
 
 <Method name="False">
-<ClassMethod>1</ClassMethod>
 <FormalSpec>pValue,pMessage=""</FormalSpec>
 <Implementation><![CDATA[	Do $$$AssertNotTrue(pValue, pMessage)
 ]]></Implementation>
 </Method>
 
 <Method name="Not">
-<ClassMethod>1</ClassMethod>
 <FormalSpec>pValue,pExpected,pMessage=""</FormalSpec>
 <Implementation><![CDATA[	Do $$$AssertNotEquals(pValue, pExpected, pMessage)
 ]]></Implementation>
@@ -485,7 +480,6 @@ its tests from Studio or the Command Line. </Description>
 <Method name="Is">
 <Description>
 Assert Should Be Equals </Description>
-<ClassMethod>1</ClassMethod>
 <FormalSpec>pValue,pExpected,pMessage=""</FormalSpec>
 <ReturnType>%Boolean</ReturnType>
 <Implementation><![CDATA[
@@ -502,21 +496,18 @@ Assert Should Be Equals </Description>
 </Method>
 
 <Method name="Eql">
-<ClassMethod>1</ClassMethod>
 <FormalSpec>pValue,pExpected,pMessage=""</FormalSpec>
 <Implementation><![CDATA[	Do ..Is(pValue, pExpected, pMessage)
 ]]></Implementation>
 </Method>
 
 <Method name="Equal">
-<ClassMethod>1</ClassMethod>
 <FormalSpec>pValue,pExpected,pMessage=""</FormalSpec>
 <Implementation><![CDATA[	Do ..Is(pValue, pExpected, pMessage)
 ]]></Implementation>
 </Method>
 
 <Method name="Exactly">
-<ClassMethod>1</ClassMethod>
 <FormalSpec>pValue,pExpected,pMessage=""</FormalSpec>
 <Implementation><![CDATA[	Do ..Is(pValue, pExpected, pMessage)
 ]]></Implementation>
@@ -527,7 +518,6 @@ Assert Should Be Equals </Description>
 Assert given object matches a Regex
 Given: String, otherValue: regexp. Uses %Regex.Matcher:
 </Description>
-<ClassMethod>1</ClassMethod>
 <FormalSpec>pValue,pRegex,pMessage=""</FormalSpec>
 <Implementation><![CDATA[
 	Set matcher = ##class(%Regex.Matcher).%New(pRegex)
@@ -538,7 +528,6 @@ Given: String, otherValue: regexp. Uses %Regex.Matcher:
 </Method>
 
 <Method name="Match">
-<ClassMethod>1</ClassMethod>
 <FormalSpec>pValue,pRegex,pMessage=""</FormalSpec>
 <Implementation><![CDATA[	Do ..Regex(pValue, pRegex, pMessage)
 ]]></Implementation>
@@ -549,7 +538,6 @@ Given: String, otherValue: regexp. Uses %Regex.Matcher:
 Assert inclusive numeric range (<= to and >= from):
 
 Do ..Within(User.Age, 5, 50)]]></Description>
-<ClassMethod>1</ClassMethod>
 <FormalSpec>pValue,pMin,pMax,pMessage=""</FormalSpec>
 <Implementation><![CDATA[	Do ..True(((pValue >= pMin)&&(pValue <= pMax)),pMessage)
 ]]></Implementation>
@@ -562,7 +550,6 @@ Assert numeric value above the given value (> num):
 
 Do ..Above(User.Age, 5)
 Do ..GreaterThan(User.Age, 5)]]></Description>
-<ClassMethod>1</ClassMethod>
 <FormalSpec>pValue,pNum,pMessage=""</FormalSpec>
 <Implementation><![CDATA[	Do ..True((pValue > pNum), pMessage)
 ]]></Implementation>
@@ -571,7 +558,6 @@ Do ..GreaterThan(User.Age, 5)]]></Description>
 <Method name="GreaterThan">
 <Description><![CDATA[
 Assert numeric value above the given value (> num):]]></Description>
-<ClassMethod>1</ClassMethod>
 <FormalSpec>pValue,pNum,pMessage=""</FormalSpec>
 <Implementation><![CDATA[	Do ..Above(pValue, pNum, pMessage = "")
 ]]></Implementation>
@@ -584,7 +570,6 @@ Assert numeric value below the given value (< num)
 
 Do ..Below(User.Age, 50)
 Do ..LessThan(User.Age, 50)]]></Description>
-<ClassMethod>1</ClassMethod>
 <FormalSpec>pValue,pNum,pMessage=""</FormalSpec>
 <Implementation><![CDATA[	Do ..True((pValue < pNum), pMessage)
 ]]></Implementation>
@@ -593,7 +578,6 @@ Do ..LessThan(User.Age, 50)]]></Description>
 <Method name="LessThan">
 <Description><![CDATA[
 Assert numeric value below the given value (< num)]]></Description>
-<ClassMethod>1</ClassMethod>
 <FormalSpec>pValue,pNum,pMessage=""</FormalSpec>
 <Implementation><![CDATA[	Do ..Below(pValue, pNum, pMessage = "")
 ]]></Implementation>
@@ -954,7 +938,7 @@ current namespace.]]></Description>
 </Class>
 
 
-<Project name="DEVCON_GEN" LastModified="2016-06-17 08:30:50.045738">
+<Project name="DEVCON_GEN" LastModified="2016-06-17 08:30:50.045463">
   <Items>
     <ProjectItem name="Atomic" type="PKG"></ProjectItem>
     <ProjectItem name="SampleProject" type="PKG"></ProjectItem>
@@ -1040,7 +1024,7 @@ current namespace.]]></Description>
 
 <Class name="SampleProject.External.LegacyData">
 <Super>%Persistent,%Populate</Super>
-<TimeChanged>64086,29566.473078</TimeChanged>
+<TimeChanged>64086,41434.439444</TimeChanged>
 <TimeCreated>61432,39530.410003</TimeCreated>
 <Inheritance>right</Inheritance>
 
@@ -1089,6 +1073,7 @@ current namespace.]]></Description>
 <IdLocation>^SampleProject.EC0BD.LegacyDataD</IdLocation>
 <IndexLocation>^SampleProject.EC0BD.LegacyDataI</IndexLocation>
 <StreamLocation>^SampleProject.EC0BD.LegacyDataS</StreamLocation>
+<ExtentSize>2</ExtentSize>
 <Data name="LegacyDataDefaultData">
 <Structure>listnode</Structure>
 <Subscript/>
@@ -1108,6 +1093,24 @@ current namespace.]]></Description>
 <Value>SocialSecurityNumber</Value>
 </Value>
 </Data>
+<Property name="%%CLASSNAME">
+<Selectivity>100.0000%</Selectivity>
+</Property>
+<Property name="FullAddress">
+<Selectivity>50.0000%</Selectivity>
+</Property>
+<Property name="FullName">
+<Selectivity>50.0000%</Selectivity>
+</Property>
+<Property name="Sex">
+<Selectivity>100.0000%</Selectivity>
+</Property>
+<Property name="SocialSecurityNumber">
+<Selectivity>50.0000%</Selectivity>
+</Property>
+<SQLMap name="IDKEY">
+<BlockCount>-4</BlockCount>
+</SQLMap>
 </Storage>
 </Class>
 
@@ -1446,7 +1449,7 @@ current namespace.]]></Description>
 
 <Class name="Tests.PersonDataWriterTest">
 <Super>Atomic.UnitTest.TestHelper</Super>
-<TimeChanged>64086,30282.533628</TimeChanged>
+<TimeChanged>64086,41407.762956</TimeChanged>
 <TimeCreated>61432,40599.410644</TimeCreated>
 
 <Property name="target">
@@ -1472,7 +1475,7 @@ current namespace.]]></Description>
 	Do ..adapter.Stub("PutLine", $$$OK)
 	Set person = ..CreateHappyPerson()
 	
-	Do $$$AssertStatusOK(..target.Write(..adapter, person, "Hello.txt"))
+	Do ..Ok(..target.Write(..adapter, person, "Hello.txt"))
 	
 	Set line = "Justin,DeWind,123 Foo,MI,Holland,49301,Male,123-12-1234"
 	Do $$$AssertEquals(line, ..adapter.ArgsForMethod("PutLine").GetAt(2).GetValue())
