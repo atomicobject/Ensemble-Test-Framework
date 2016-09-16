@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<Export generator="Cache" version="25" zv="Cache for Windows (x86-32) 2015.1.1 (Build 505U)" ts="2016-06-17 13:16:41">
+<Export generator="Cache" version="25" zv="Cache for Windows (x86-32) 2015.1.1 (Build 505U)" ts="2016-09-16 14:59:40">
 
 
 <Class name="Atomic.UnitTest.ContinuousIntegrationEmailAlert">
@@ -443,37 +443,55 @@ A test case that contains helper methods that allows it to run
 its tests from Studio or the Command Line. </Description>
 <Abstract>1</Abstract>
 <Super>%UnitTest.TestCase,Atomic.UnitTest.TestRunner</Super>
-<TimeChanged>64086,47796.229105</TimeChanged>
+<TimeChanged>64176,40706.936659</TimeChanged>
 <TimeCreated>61313,40113.921402</TimeCreated>
 <Inheritance>right</Inheritance>
 
 <Method name="Ok">
+<Description>
+Assert that status is OK</Description>
 <FormalSpec>pValue,pMessage=""</FormalSpec>
-<Implementation><![CDATA[	Do $$$AssertStatusOK(pValue, pMessage)
+<Implementation><![CDATA[
+	Set:((pMessage="")&&($$$ISERR(pValue))) pMessage = ..Message("$$$Ok", $System.Status.GetErrorText(pValue))
+	Do $$$AssertStatusOK(pValue, pMessage)
 ]]></Implementation>
 </Method>
 
 <Method name="NotOk">
+<Description>
+Assert that status is Not OK</Description>
 <FormalSpec>pValue,pMessage=""</FormalSpec>
 <Implementation><![CDATA[	Do $$$AssertStatusNotOK(pValue, pMessage)
 ]]></Implementation>
 </Method>
 
 <Method name="True">
+<Description>
+Assert that value is true.</Description>
 <FormalSpec>pValue,pMessage=""</FormalSpec>
-<Implementation><![CDATA[	Do $$$AssertTrue(pValue, pMessage)
+<Implementation><![CDATA[
+	Set:pMessage="" pMessage = ..Message("True",$Select(pValue="":"False",0:"False",1:"True"))
+	Do $$$AssertTrue(pValue, pMessage)
 ]]></Implementation>
 </Method>
 
 <Method name="False">
+<Description>
+Assert that value is false.</Description>
 <FormalSpec>pValue,pMessage=""</FormalSpec>
-<Implementation><![CDATA[	Do $$$AssertNotTrue(pValue, pMessage)
+<Implementation><![CDATA[
+	Set:pMessage="" pMessage = ..Message("False",$Select(pValue="":"True",0:"True",1:"False"))
+	Do $$$AssertNotTrue(pValue, pMessage)
 ]]></Implementation>
 </Method>
 
 <Method name="Not">
+<Description>
+Assert that value is not equal to expected</Description>
 <FormalSpec>pValue,pExpected,pMessage=""</FormalSpec>
-<Implementation><![CDATA[	Do $$$AssertNotEquals(pValue, pExpected, pMessage)
+<Implementation><![CDATA[
+	Set:pMessage="" pMessage = ..Message(pExpected,pValue)
+	Do $$$AssertNotEquals(pValue, pExpected, pMessage)
 ]]></Implementation>
 </Method>
 
@@ -481,48 +499,48 @@ its tests from Studio or the Command Line. </Description>
 <Description>
 Assert Should Be Equals </Description>
 <FormalSpec>pValue,pExpected,pMessage=""</FormalSpec>
-<ReturnType>%Boolean</ReturnType>
 <Implementation><![CDATA[
-	/*
-	Problems here -> Set manager=r%Manager
- 	Set description=$g(pMessage,..ParseAutoQuoted(pValue _ " is " _ pExpected ))
- 	Set success=pValue=pExpected
- 	Do manager.LogAssert(success,"AssertEquals",description)
- 	If success||'..Debug Quit success
- 	Break  Quit success
- 	//*/
- 	Quit 1
-]]></Implementation>
-</Method>
-
-<Method name="Eql">
-<FormalSpec>pValue,pExpected,pMessage=""</FormalSpec>
-<Implementation><![CDATA[	Do ..Is(pValue, pExpected, pMessage)
+ 	Set:pMessage="" pMessage = ..Message(pExpected,pValue)
+ 	Do $$$AssertEquals(pValue, pExpected, pMessage)
 ]]></Implementation>
 </Method>
 
 <Method name="Equal">
+<Description>
+Assert Should Be Equal</Description>
 <FormalSpec>pValue,pExpected,pMessage=""</FormalSpec>
 <Implementation><![CDATA[	Do ..Is(pValue, pExpected, pMessage)
 ]]></Implementation>
 </Method>
 
+<Method name="Eql">
+<Description>
+Assert Should Be Equal</Description>
+<FormalSpec>pValue,pExpected,pMessage=""</FormalSpec>
+<Implementation><![CDATA[	Do ..Equal(pValue, pExpected, pMessage)
+]]></Implementation>
+</Method>
+
 <Method name="Exactly">
+<Description>
+Assert Should Be Exact the same</Description>
 <FormalSpec>pValue,pExpected,pMessage=""</FormalSpec>
 <Implementation><![CDATA[	Do ..Is(pValue, pExpected, pMessage)
 ]]></Implementation>
 </Method>
 
 <Method name="Regex">
-<Description>
-Assert given object matches a Regex
+<Description><![CDATA[
+Assert given object matches a Regex<br/>
 Given: String, otherValue: regexp. Uses %Regex.Matcher:
-</Description>
+]]></Description>
 <FormalSpec>pValue,pRegex,pMessage=""</FormalSpec>
 <Implementation><![CDATA[
 	Set matcher = ##class(%Regex.Matcher).%New(pRegex)
 	Set matcher.Text = pValue
-    	
+	
+    Set:pMessage="" pMessage = ..Message(pRegex,pValue)
+    
 	Do ..True(matcher.Locate(), pMessage)
 ]]></Implementation>
 </Method>
@@ -535,23 +553,27 @@ Given: String, otherValue: regexp. Uses %Regex.Matcher:
 
 <Method name="Within">
 <Description><![CDATA[
-Assert inclusive numeric range (<= to and >= from):
-
+Assert inclusive numeric range (<= to and >= from): <br/>
+<br/>
 Do ..Within(User.Age, 5, 50)]]></Description>
 <FormalSpec>pValue,pMin,pMax,pMessage=""</FormalSpec>
-<Implementation><![CDATA[	Do ..True(((pValue >= pMin)&&(pValue <= pMax)),pMessage)
+<Implementation><![CDATA[
+	Set:pMessage="" pMessage = ..Message(pMin_".."_pMax, pValue)
+	Do ..True(((pValue >= pMin)&&(pValue <= pMax)),pMessage)
 ]]></Implementation>
 </Method>
 
 <Method name="Above">
 <Description><![CDATA[
 Above(num) and GreaterThan(num)
-Assert numeric value above the given value (> num):
-
-Do ..Above(User.Age, 5)
+Assert numeric value above the given value (> num): <br/>
+<br/>
+Do ..Above(User.Age, 5)<br/>
 Do ..GreaterThan(User.Age, 5)]]></Description>
 <FormalSpec>pValue,pNum,pMessage=""</FormalSpec>
-<Implementation><![CDATA[	Do ..True((pValue > pNum), pMessage)
+<Implementation><![CDATA[
+	Set:pMessage="" pMessage = ..Message(pNum_" < ", pValue)
+	Do ..True((pValue > pNum), pMessage)
 ]]></Implementation>
 </Method>
 
@@ -565,10 +587,10 @@ Assert numeric value above the given value (> num):]]></Description>
 
 <Method name="Below">
 <Description><![CDATA[
-Below(num) and LessThan(num)
-Assert numeric value below the given value (< num)
-
-Do ..Below(User.Age, 50)
+Below(num) and LessThan(num)<br/>
+Assert numeric value below the given value (< num)<br/>
+<br/>
+Do ..Below(User.Age, 50)<br/>
 Do ..LessThan(User.Age, 50)]]></Description>
 <FormalSpec>pValue,pNum,pMessage=""</FormalSpec>
 <Implementation><![CDATA[	Do ..True((pValue < pNum), pMessage)
@@ -580,6 +602,19 @@ Do ..LessThan(User.Age, 50)]]></Description>
 Assert numeric value below the given value (< num)]]></Description>
 <FormalSpec>pValue,pNum,pMessage=""</FormalSpec>
 <Implementation><![CDATA[	Do ..Below(pValue, pNum, pMessage = "")
+]]></Implementation>
+</Method>
+
+<Method name="startWith">
+<Description><![CDATA[
+Assert that a string starts with str.
+<br/>
+Do ..startWith('foobar','foo')]]></Description>
+<FormalSpec>pValue,pExpected,pMessage=""</FormalSpec>
+<Implementation><![CDATA[
+	Set:pMessage="" pMessage = ..Message("start with "_pExpected, pValue)
+	Set pExpected = $Replace($Replace($Replace($Replace(pExpected,"/","\/"),"+","\+"),"*","\*")," ","\s")
+	Do ..Regex(pValue,"^("_pExpected_")",pMessage)
 ]]></Implementation>
 </Method>
 
@@ -704,6 +739,16 @@ assert.ifError(value) // should(value).Error (to check if it is error) or should
 	}
 ]]></Implementation>
 </Method>
+
+<Method name="Message">
+<FormalSpec>pExpected="",pGot="",pBR=""</FormalSpec>
+<Private>1</Private>
+<ReturnType>%String</ReturnType>
+<Implementation><![CDATA[
+	Set:pBR="" pBR = " "
+	Quit "expected: " _ $Get(pExpected) _ pBR _" got: "_$Get(pGot)
+]]></Implementation>
+</Method>
 </Class>
 
 
@@ -745,7 +790,7 @@ The <b>UnitTest.TestSuite</b> collects and executes a set of test cases in a par
 package.]]></Description>
 <Abstract>1</Abstract>
 <Super>%RegisteredObject</Super>
-<TimeChanged>64086,29180.915355</TimeChanged>
+<TimeChanged>64175,49557.444945</TimeChanged>
 <TimeCreated>61318,29605.415285</TimeCreated>
 
 <Parameter name="DESTROYTESTLOGS">
@@ -786,7 +831,7 @@ from the <method>Package</method> class method.]]></Description>
 	
 	For
 	{
-		Set class = $ORDER(classList(class))
+		Set class = $Order(classList(class))
 		Quit:class=""
 		
 		If $$issubclassof^%occCompile(class,"%UnitTest.TestCase")
@@ -803,7 +848,7 @@ from the <method>Package</method> class method.]]></Description>
 		}	
 	}
 	
-	Quit $LISTFROMSTRING(testList)
+	Quit $ListFromString(testList)
 ]]></Implementation>
 </Method>
 
@@ -820,15 +865,22 @@ Runs all of the tests in a particular package.
 	Quit:$$$ISERR(tSC) tSC
 	
 	Set tests = ..Tests()
-	Quit:$LISTLENGTH(tests)=0 $$$OK
+	Quit:$ListLength(tests)=0 $$$OK
 	
 	Set failureCount = 0	
-		
-	For i = 1:1:$LISTLENGTH(tests) {
-		Do ..RunTest($LISTGET(tests, i))
+	Set previousIndex = $Order(^UnitTest.Result(""),-1)
+	
+	For i = 1:1:$ListLength(tests) {
+		Do ..RunTest($ListGet(tests, i))
 		
 		Set testCount = ..GetTestCount()
+		
 	}
+
+	//Set lastIndex = $Order(^UnitTest.Result(""),-1)
+
+	//Set tSC = ..ResultReport(previousIndex,lastIndex,.report,.failureCount)
+	//S ^logger = report
 
 	If failureCount > 0
 	{
@@ -856,13 +908,26 @@ current namespace.]]></Description>
 <Implementation><![CDATA[
 	Set index = ""
 
-	While $ORDER(^|$ZNSpace|UnitTestLog(index))
+	While $Order(^|$ZNSpace|UnitTestLog(index))
 	{
-		Set index = $ORDER(^|$ZNSpace|UnitTestLog(index))
+		Set index = $Order(^|$ZNSpace|UnitTestLog(index))
 	}
 	
 	Set:index="" index=0
 	Quit index
+]]></Implementation>
+</Method>
+
+<Method name="Only">
+<Description><![CDATA[
+<b>Running specific tests</b> <br/>
+During development it can be helpful to only run a few specific tests.]]></Description>
+<ClassMethod>1</ClassMethod>
+<FormalSpec>testspec:%String,pMethod:%String=""</FormalSpec>
+<ReturnType>%Status</ReturnType>
+<Implementation><![CDATA[
+	Set:pMethod'="" testspec = testspec _ ":" _ pMethod
+	Quit ..RunTest(testspec)
 ]]></Implementation>
 </Method>
 
@@ -873,9 +938,14 @@ current namespace.]]></Description>
 <FormalSpec>testspec:%String</FormalSpec>
 <ReturnType>%Status</ReturnType>
 <Implementation><![CDATA[
-	set suite = ..GetTheLastFolderFromPath() _":"_testspec
+	Do:$Get(^UnitTestRoot)="" ..SetUnitTestRoot()
+	Set package = ..Package()
+	Set:package'="" package = package _ "."
+	Set spec = testspec
+	Set:'$Find(spec,package) spec = package _ spec
+	Set suite = ..GetTheLastFolderFromPath() _":"_ spec 
 	
-	quit ##class(%UnitTest.Manager).RunTest(suite, "/noload/norecursive/nodelete")
+	Quit ##class(%UnitTest.Manager).RunTest(suite, "/noload/norecursive/nodelete")
 ]]></Implementation>
 </Method>
 
@@ -905,7 +975,6 @@ current namespace.]]></Description>
 <Implementation><![CDATA[
 	Do ..GetTempTestXmlPathAndFileName(.path, .filename)
 	Set path = $Replace(path, ..GetTheLastFolderFromPath()_"\", "")
-	
 	Set ^UnitTestRoot = path
 ]]></Implementation>
 </Method>
@@ -923,7 +992,6 @@ current namespace.]]></Description>
 	While matcher.Locate() {
 		Set pFilename = matcher.Group
 	}
-	
 	Set pPath = $Piece(tempXmlPathAndFileName,pFilename,1)
 ]]></Implementation>
 </Method>
@@ -935,10 +1003,62 @@ current namespace.]]></Description>
 <Implementation><![CDATA[	Quit $System.OBJ.ExportPackage(..Package(),..TempFileName())
 ]]></Implementation>
 </Method>
+
+<Method name="ResultReport">
+<ClassMethod>1</ClassMethod>
+<FormalSpec><![CDATA[pPrevious:%Integer,pLast:%Integer,&pReport,&pFailureCount=0]]></FormalSpec>
+<Private>1</Private>
+<ReturnType>%Status</ReturnType>
+<Implementation><![CDATA[
+	Set tSC = $$$OK
+	Try {
+		Set pTestSuite= $Order(^|$ZNSpace|UnitTest.Result(pPrevious,""))
+		Set pReport = "", pFailureCount = 0
+		Set count = (pLast - pPrevious) + 1
+		Set currentSession = pPrevious
+		For k=1:1:count {
+			Set class = ""
+			For {
+				Set class = $Order(^|$ZNSpace|UnitTest.Result(currentSession, pTestSuite, class))
+				Quit:class=""
+				Set methods = "", classResults = ""
+				For {
+					Set methods = $Order(^|$ZNSpace|UnitTest.Result(currentSession, pTestSuite, class, methods))
+					Quit:methods=""
+					Set asserts = "", methodResult = ""
+					For {
+						Set asserts = $Order(^|$ZNSpace|UnitTest.Result(currentSession, pTestSuite, class, methods,asserts))
+						Quit:asserts=""
+						Set result = ^|$ZNSpace|UnitTest.Result(currentSession, pTestSuite, class, methods,asserts)
+						Set temp = "."
+						If $List(result,1)=0 {
+							Set temp = "F"_$Char(10,13)_$List(result,3)_$Char(10,13)
+							Set pFailureCount = $Increment(pFailureCount)
+						}
+						
+						Set $List(methodResult,*+1)=temp
+						Kill temp					
+					}
+					Set $List(classResults,*+1)=methods
+					Set $List(classResults,*+1)=methodResult
+				
+				}
+			}
+			Set $List(pReport,*+1) = class
+			Set $List(pReport,*+1) = classResults
+			
+			Set currentSession = $Increment(currentSession)
+		}
+	} Catch tException {
+		Set:$$$ISOK(tSC) tSC = tException.AsStatus()
+	}
+	Quit tSC
+]]></Implementation>
+</Method>
 </Class>
 
 
-<Project name="DEVCON_GEN" LastModified="2016-06-17 08:30:50.045463">
+<Project name="DEVCON_GEN" LastModified="2016-09-16 14:59:18.746128">
   <Items>
     <ProjectItem name="Atomic" type="PKG"></ProjectItem>
     <ProjectItem name="SampleProject" type="PKG"></ProjectItem>
@@ -1296,6 +1416,51 @@ current namespace.]]></Description>
 	Set tSC = ..personRequestBuilder.Build(.pInput, .person)
 	Do:$$$ISOK(tSC) ..SendRequestAsync("PersonFileOperation", person) 
 	Quit tSC
+]]></Implementation>
+</Method>
+</Class>
+
+
+<Class name="Tests.ExemplosSettings">
+<Super>dummyT.UnitTest.ProductionTestHelper</Super>
+<TimeChanged>63995,52732.35753</TimeChanged>
+<TimeCreated>63995,52732.35753</TimeCreated>
+
+<Parameter name="PRODUCTION">
+<Default>Exemplos.Producao</Default>
+</Parameter>
+
+<Method name="BsTipos">
+<Implementation><![CDATA[
+	Set config = "Tipos"
+	
+	Do ..AssertGeneralSetting(config, "Enabled", 1)
+]]></Implementation>
+</Method>
+
+<Method name="BoArquivo">
+<Implementation><![CDATA[
+	Set config = "Arquivo"
+	
+	Do ..AssertGeneralSetting(config, "Enabled", 1)
+]]></Implementation>
+</Method>
+</Class>
+
+
+<Class name="Tests.ExemplosSuite">
+<Super>dummyT.UnitTest.TestSuite</Super>
+<TimeChanged>63998,34076.679203</TimeChanged>
+<TimeCreated>63995,52710.414618</TimeCreated>
+
+<Parameter name="DESTROYTESTLOGS">
+<Default>1</Default>
+</Parameter>
+
+<Method name="Package">
+<ClassMethod>1</ClassMethod>
+<ReturnType>%String</ReturnType>
+<Implementation><![CDATA[	Quit "Exemplos.Test"
 ]]></Implementation>
 </Method>
 </Class>
