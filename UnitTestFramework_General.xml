@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<Export generator="Cache" version="25" zv="Cache for Windows (x86-32) 2015.1.1 (Build 505U)" ts="2016-12-21 14:29:26">
+<Export generator="Cache" version="25" zv="Cache for Windows (x86-32) 2015.1.1 (Build 505U)" ts="2016-12-21 14:49:48">
 
 
 <Class name="Atomic.UnitTest.ContinuousIntegrationEmailAlert">
@@ -443,7 +443,7 @@ A test case that contains helper methods that allows it to run
 its tests from Studio or the Command Line. </Description>
 <Abstract>1</Abstract>
 <Super>%UnitTest.TestCase,Atomic.UnitTest.TestRunner</Super>
-<TimeChanged>64176,40706.936659</TimeChanged>
+<TimeChanged>64273,53320.893418</TimeChanged>
 <TimeCreated>61313,40113.921402</TimeCreated>
 <Inheritance>right</Inheritance>
 
@@ -618,6 +618,18 @@ Do ..startWith('foobar','foo')]]></Description>
 ]]></Implementation>
 </Method>
 
+<Method name="Approximately">
+<Description><![CDATA[
+Assert floating point number near num within a +/- delta range.
+<br/>
+Do ..Approximately(3.49, 3.5, 0.01 )]]></Description>
+<FormalSpec>pValue:%Numeric,pExpected:%Numeric,pDelta:%Numeric=0.01,pMessage=""</FormalSpec>
+<Implementation><![CDATA[
+	Set:pMessage="" pMessage = ..Message("Approximately "_pExpected, pValue)
+	Do ..Within(pValue, (pExpected - pDelta), (pExpected + pDelta), pMessage)
+]]></Implementation>
+</Method>
+
 <Method name="Pass">
 <ClassMethod>1</ClassMethod>
 <FormalSpec>pMessage=""</FormalSpec>
@@ -640,25 +652,12 @@ Do ..startWith('foobar','foo')]]></Description>
 /*
 Some inspirations:
 
-.startWith(str)
-
-Assert that a string starts with str.
-
-'foobar'.should.startWith('foo');
-'foobar'.should.not.startWith('bar');
-
 .endWith(str)
 
 Assert that a string ends with str.
 
 'foobar'.should.endWith('bar');
-'foobar'.should.not.endWith('foo');
-
-.approximately(num, delta)
-	Assert floating point number near num within delta margin:
-	(99.99).should.be.approximately(100, 0.1);
-
-
+'foobar'.should.not.endWith('foo')
 
 
 Assert that value is not equal to expected.
