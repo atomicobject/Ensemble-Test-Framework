@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<Export generator="Cache" version="25" zv="Cache for Windows (x86-32) 2015.1.1 (Build 505U)" ts="2016-09-16 14:59:40">
+<Export generator="Cache" version="25" zv="Cache for Windows (x86-32) 2015.1.1 (Build 505U)" ts="2016-12-21 14:29:26">
 
 
 <Class name="Atomic.UnitTest.ContinuousIntegrationEmailAlert">
@@ -1058,7 +1058,7 @@ During development it can be helpful to only run a few specific tests.]]></Descr
 </Class>
 
 
-<Project name="DEVCON_GEN" LastModified="2016-09-16 14:59:18.746128">
+<Project name="DEVCON_GEN" LastModified="2016-12-21 14:25:30.448122">
   <Items>
     <ProjectItem name="Atomic" type="PKG"></ProjectItem>
     <ProjectItem name="SampleProject" type="PKG"></ProjectItem>
@@ -1390,11 +1390,11 @@ During development it can be helpful to only run a few specific tests.]]></Descr
 <Class name="SampleProject.Service.PersonService">
 <ProcedureBlock>1</ProcedureBlock>
 <Super>Ens.BusinessService</Super>
-<TimeChanged>64086,29786.932403</TimeChanged>
+<TimeChanged>64273,52141.904401</TimeChanged>
 <TimeCreated>61432,38431.63152</TimeCreated>
 
 <Property name="personRequestBuilder">
-<Type>Service.PersonRequestBuilder</Type>
+<Type>SampleProject.Service.PersonRequestBuilder</Type>
 </Property>
 
 <Parameter name="ADAPTER">
@@ -1422,8 +1422,8 @@ During development it can be helpful to only run a few specific tests.]]></Descr
 
 
 <Class name="Tests.ExemplosSettings">
-<Super>dummyT.UnitTest.ProductionTestHelper</Super>
-<TimeChanged>63995,52732.35753</TimeChanged>
+<Super>Atomic.UnitTest.ProductionTestHelper</Super>
+<TimeChanged>64273,52071.455319</TimeChanged>
 <TimeCreated>63995,52732.35753</TimeCreated>
 
 <Parameter name="PRODUCTION">
@@ -1449,8 +1449,8 @@ During development it can be helpful to only run a few specific tests.]]></Descr
 
 
 <Class name="Tests.ExemplosSuite">
-<Super>dummyT.UnitTest.TestSuite</Super>
-<TimeChanged>63998,34076.679203</TimeChanged>
+<Super>Atomic.UnitTest.TestSuite</Super>
+<TimeChanged>64273,52059.614787</TimeChanged>
 <TimeCreated>63995,52710.414618</TimeCreated>
 
 <Parameter name="DESTROYTESTLOGS">
