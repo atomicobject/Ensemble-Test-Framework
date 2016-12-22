@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<Export generator="Cache" version="25" zv="Cache for Windows (x86-32) 2015.1.1 (Build 505U)" ts="2016-12-21 14:49:48">
+<Export generator="Cache" version="25" zv="Cache for Windows (x86-32) 2015.1.1 (Build 505U)" ts="2016-12-22 14:32:11">
 
 
 <Class name="Atomic.UnitTest.ContinuousIntegrationEmailAlert">
@@ -443,7 +443,7 @@ A test case that contains helper methods that allows it to run
 its tests from Studio or the Command Line. </Description>
 <Abstract>1</Abstract>
 <Super>%UnitTest.TestCase,Atomic.UnitTest.TestRunner</Super>
-<TimeChanged>64273,53320.893418</TimeChanged>
+<TimeChanged>64274,52185.198104</TimeChanged>
 <TimeCreated>61313,40113.921402</TimeCreated>
 <Inheritance>right</Inheritance>
 
@@ -577,6 +577,16 @@ Do ..GreaterThan(User.Age, 5)]]></Description>
 ]]></Implementation>
 </Method>
 
+<Method name="IsAtLeast">
+<Description><![CDATA[
+Assert is greater than or equal to (>=) valueToBeAtLeast(num)]]></Description>
+<FormalSpec>pValue,pNum,pMessage=""</FormalSpec>
+<Implementation><![CDATA[
+	Set:pMessage="" pMessage = ..Message("Is at Least " _ pNum, pValue)
+	Do ..True((pValue >= pNum), pMessage)
+]]></Implementation>
+</Method>
+
 <Method name="GreaterThan">
 <Description><![CDATA[
 Assert numeric value above the given value (> num):]]></Description>
@@ -605,6 +615,16 @@ Assert numeric value below the given value (< num)]]></Description>
 ]]></Implementation>
 </Method>
 
+<Method name="IsAtMost">
+<Description><![CDATA[
+Assert is less than or equal to (<=) valueToBeAtMost (num)]]></Description>
+<FormalSpec>pValue,pNum,pMessage=""</FormalSpec>
+<Implementation><![CDATA[
+	Set:pMessage="" pMessage = ..Message("Is at Most " _ pNum, pValue)
+	Do ..True((pValue <= pNum), pMessage)
+]]></Implementation>
+</Method>
+
 <Method name="startWith">
 <Description><![CDATA[
 Assert that a string starts with str.
@@ -627,6 +647,64 @@ Do ..Approximately(3.49, 3.5, 0.01 )]]></Description>
 <Implementation><![CDATA[
 	Set:pMessage="" pMessage = ..Message("Approximately "_pExpected, pValue)
 	Do ..Within(pValue, (pExpected - pDelta), (pExpected + pDelta), pMessage)
+]]></Implementation>
+</Method>
+
+<Method name="CloseTo">
+<Description><![CDATA[
+Asserts that the target is equal expected, to within a +/- delta range.
+<br/>
+Do ..CloseTo(1.5, 1, 0.5)]]></Description>
+<FormalSpec>pValue:%Numeric,pExpected:%Numeric,pDelta:%Numeric=0.5,pMessage=""</FormalSpec>
+<Implementation><![CDATA[
+	Set:pMessage="" pMessage = ..Message("Close to "_pExpected, pValue)
+	Do ..Approximately(pValue, pExpected, pDelta, pMessage)
+]]></Implementation>
+</Method>
+
+<Method name="IsObject">
+<Description>
+Asserts that value is an object</Description>
+<FormalSpec>pValue,pMessage=""</FormalSpec>
+<Implementation><![CDATA[
+	Set:pMessage="" pMessage = ..Message("Is Object")
+	Do ..True($IsObject(pValue) , pMessage)
+]]></Implementation>
+</Method>
+
+<Method name="IsNotObject">
+<Description>
+Asserts that value is NOT an object</Description>
+<FormalSpec>pValue,pMessage=""</FormalSpec>
+<Implementation><![CDATA[
+	Set:pMessage="" pMessage = ..Message("Is not Object", $ClassName(pValue))
+	Do ..False($IsObject(pValue) , pMessage)
+]]></Implementation>
+</Method>
+
+<Method name="Throws">
+<Description>
+Assert that throws an error, or promise rejects with an error.</Description>
+<FormalSpec>pStatus,pMessage=""</FormalSpec>
+<Implementation><![CDATA[	Do ..NotOk(pStatus)
+]]></Implementation>
+</Method>
+
+<Method name="NotThrows">
+<Description>
+Assert that doesn't throw an error or promise resolves</Description>
+<FormalSpec>pStatus,pMessage=""</FormalSpec>
+<Implementation><![CDATA[	Do ..Ok(pStatus)
+]]></Implementation>
+</Method>
+
+<Method name="TypeOf">
+<Description><![CDATA[
+Asserts that value’s type is pClassName
+<br/>
+Do ..TypeOf(pClass, "%RegisteredObject" )]]></Description>
+<FormalSpec>pValue,pClassName,pMessage=""</FormalSpec>
+<Implementation><![CDATA[	Do ..Is($ClassName(pValue),pClassName)
 ]]></Implementation>
 </Method>
 
@@ -665,28 +743,13 @@ Assert that value is not equal to expected.
 
 Assert that value is deep equal to expected.
 .notDeepEqual(value, expected, [message])
-
 Assert that value is not deep equal to expected.
-.throws(function|promise, [error, [message]])
 
-Assert that function throws an error, or promise rejects with an error.
-
-error can be a constructor, regex, error message or validation function.
-
-Returns the error thrown by function or the rejection reason of promise.
-.notThrows(function|promise, [message])
-
-Assert that function doesn't throw an error or promise resolves.
-.regex(contents, regex, [message])
-
-Assert that contents matches regex.
 .ifError(error, [message])
-
 Assert that error is falsy.
 
 assert.fail(actual, expected, message, operator) // just write wrong should assertion
 assert(value, message), assert.ok(value, [message]) // should(value).ok
-assert.equal(actual, expected, [message]) // should(actual).eql(expected, [message])
 assert.notEqual(actual, expected, [message]) // should(actual).not.eql(expected, [message])
 assert.deepEqual(actual, expected, [message]) // should(actual).eql(expected, [message])
 assert.notDeepEqual(actual, expected, [message]) // should(actual).not.eql(expected, [message])
