@@ -1,7 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<Export generator="Cache" version="25" zv="Cache for Windows (x86-32) 2015.1.1 (Build 505U)" ts="2016-12-22 14:32:11">
-
-
+<Export generator="Cache" version="25" zv="Cache for Windows (x86-32) 2015.1.1 (Build 505U)" ts="2017-01-27 13:43:33">
 <Class name="Atomic.UnitTest.ContinuousIntegrationEmailAlert">
 <Description><![CDATA[
 The <b>UnitTest.ContinuousIntegrationEmailAlert</b> is a custom
@@ -129,6 +127,44 @@ the suite of tests.
 <Method name="SetValue">
 <FormalSpec>value</FormalSpec>
 <Implementation><![CDATA[	Set ..value = value
+]]></Implementation>
+</Method>
+</Class>
+
+
+<Class name="Atomic.UnitTest.EnsTestHelper">
+<Super>%UnitTest.TestCase</Super>
+<TimeChanged>64310,48515.043678</TimeChanged>
+<TimeCreated>64310,48430.047016</TimeCreated>
+
+<Method name="SendRequest">
+<ClassMethod>1</ClassMethod>
+<FormalSpec>pBSName:%String,pMensage,*pResponse=""</FormalSpec>
+<Implementation><![CDATA[
+	Set tSC = $$$OK
+	Try {
+		Do ##class(Ens.Director).CreateBusinessService(pBSName,.tService)
+		Do tService.ProcessInput(pMensage,.pResponse)
+	} Catch tException {
+		Set:$$$ISOK(tSC) tSC = tException.AsStatus()
+	}
+	
+	Quit tSC
+]]></Implementation>
+</Method>
+
+<Method name="AssertMessageMapping">
+<FormalSpec>className:%String,type:%String,action:%String,index:%Integer=1</FormalSpec>
+<Implementation><![CDATA[
+	Do ##class(Ens.Util.XML.Reader).ObjectsFromXData(.items, className, "MessageMap", "Ens.Config.MessageMap")
+	If items="" {
+		Do $$$AssertNotEquals("", items, "No mappings found")
+	} ElseIf items.Size < index {
+		Do $$$AssertTrue(items.Size >= index, "Could not find mapping for given index '"_index_"'")
+	} Else {
+		Do $$$AssertEquals(type, items.GetAt(index).MessageType)
+		Do $$$AssertEquals(action, items.GetAt(index).ActionMethod)
+	}
 ]]></Implementation>
 </Method>
 </Class>
@@ -442,8 +478,8 @@ the suite of tests.
 A test case that contains helper methods that allows it to run
 its tests from Studio or the Command Line. </Description>
 <Abstract>1</Abstract>
-<Super>%UnitTest.TestCase,Atomic.UnitTest.TestRunner</Super>
-<TimeChanged>64274,52185.198104</TimeChanged>
+<Super>%UnitTest.TestCase,Atomic.UnitTest.TestRunner,Atomic.UnitTest.EnsTestHelper</Super>
+<TimeChanged>64310,48534.889539</TimeChanged>
 <TimeCreated>61313,40113.921402</TimeCreated>
 <Inheritance>right</Inheritance>
 
@@ -529,6 +565,55 @@ Assert Should Be Exact the same</Description>
 ]]></Implementation>
 </Method>
 
+<Method name="Empty">
+<Description>
+Assert Should be Null</Description>
+<FormalSpec>pValue,pMessage=""</FormalSpec>
+<Implementation><![CDATA[
+	Set:pMessage="" pMessage = ..Message("Null", $Case(pValue="",1:"Null",:pValue))
+	Do ..Is(pValue,"",pMessage)
+]]></Implementation>
+</Method>
+
+<Method name="IsBlank">
+<Description>
+Assert Should be truly null</Description>
+<FormalSpec>pValue,pMessage=""</FormalSpec>
+<Implementation><![CDATA[
+	Set pValue = $Replace(pValue," ","")
+	Do ..Is(pValue,pMessage)
+]]></Implementation>
+</Method>
+
+<Method name="NotEmpty">
+<Description>
+Assert Should Not be Null</Description>
+<FormalSpec>pValue,pMessage=""</FormalSpec>
+<Implementation><![CDATA[
+	Set:pMessage="" pMessage = ..Message("Not Null", $Case(pValue'="",1:"Not Null",:"Null"))
+	Do ..Not(pValue,"",pMessage)
+]]></Implementation>
+</Method>
+
+<Method name="Null">
+<FormalSpec>pValue,pMessage=""</FormalSpec>
+<Implementation><![CDATA[	Do ..Empty(pValue, pMessage)
+]]></Implementation>
+</Method>
+
+<Method name="RegexMatcher">
+<Description>
+Method to do a Regex</Description>
+<FormalSpec>pValue,pRegex</FormalSpec>
+<Private>1</Private>
+<ReturnType>%Boolean</ReturnType>
+<Implementation><![CDATA[
+	Set matcher = ##class(%Regex.Matcher).%New(pRegex)
+	Set matcher.Text = pValue
+	Quit matcher.Locate()
+]]></Implementation>
+</Method>
+
 <Method name="Regex">
 <Description><![CDATA[
 Assert given object matches a Regex<br/>
@@ -536,18 +621,24 @@ Given: String, otherValue: regexp. Uses %Regex.Matcher:
 ]]></Description>
 <FormalSpec>pValue,pRegex,pMessage=""</FormalSpec>
 <Implementation><![CDATA[
-	Set matcher = ##class(%Regex.Matcher).%New(pRegex)
-	Set matcher.Text = pValue
-	
     Set:pMessage="" pMessage = ..Message(pRegex,pValue)
-    
-	Do ..True(matcher.Locate(), pMessage)
+	Do ..True(..RegexMatcher(pValue,pRegex), pMessage)
 ]]></Implementation>
 </Method>
 
 <Method name="Match">
 <FormalSpec>pValue,pRegex,pMessage=""</FormalSpec>
 <Implementation><![CDATA[	Do ..Regex(pValue, pRegex, pMessage)
+]]></Implementation>
+</Method>
+
+<Method name="RefuteMatch">
+<Description>
+Assert that fails if object matches a Regex</Description>
+<FormalSpec>pValue,pRegex,pMessage=""</FormalSpec>
+<Implementation><![CDATA[
+	Set:pMessage="" pMessage = ..Message(pRegex,pValue)
+	Do ..False(..RegexMatcher(pValue,pRegex), pMessage)
 ]]></Implementation>
 </Method>
 
@@ -574,16 +665,6 @@ Do ..GreaterThan(User.Age, 5)]]></Description>
 <Implementation><![CDATA[
 	Set:pMessage="" pMessage = ..Message(pNum_" < ", pValue)
 	Do ..True((pValue > pNum), pMessage)
-]]></Implementation>
-</Method>
-
-<Method name="IsAtLeast">
-<Description><![CDATA[
-Assert is greater than or equal to (>=) valueToBeAtLeast(num)]]></Description>
-<FormalSpec>pValue,pNum,pMessage=""</FormalSpec>
-<Implementation><![CDATA[
-	Set:pMessage="" pMessage = ..Message("Is at Least " _ pNum, pValue)
-	Do ..True((pValue >= pNum), pMessage)
 ]]></Implementation>
 </Method>
 
@@ -615,16 +696,6 @@ Assert numeric value below the given value (< num)]]></Description>
 ]]></Implementation>
 </Method>
 
-<Method name="IsAtMost">
-<Description><![CDATA[
-Assert is less than or equal to (<=) valueToBeAtMost (num)]]></Description>
-<FormalSpec>pValue,pNum,pMessage=""</FormalSpec>
-<Implementation><![CDATA[
-	Set:pMessage="" pMessage = ..Message("Is at Most " _ pNum, pValue)
-	Do ..True((pValue <= pNum), pMessage)
-]]></Implementation>
-</Method>
-
 <Method name="startWith">
 <Description><![CDATA[
 Assert that a string starts with str.
@@ -638,73 +709,25 @@ Do ..startWith('foobar','foo')]]></Description>
 ]]></Implementation>
 </Method>
 
-<Method name="Approximately">
-<Description><![CDATA[
-Assert floating point number near num within a +/- delta range.
-<br/>
-Do ..Approximately(3.49, 3.5, 0.01 )]]></Description>
-<FormalSpec>pValue:%Numeric,pExpected:%Numeric,pDelta:%Numeric=0.01,pMessage=""</FormalSpec>
+<Method name="KindOf">
+<Description>
+Assert that an obj is a kind of a class</Description>
+<FormalSpec>pOject,pExpectedClass:%String,pMessage=""</FormalSpec>
 <Implementation><![CDATA[
-	Set:pMessage="" pMessage = ..Message("Approximately "_pExpected, pValue)
-	Do ..Within(pValue, (pExpected - pDelta), (pExpected + pDelta), pMessage)
-]]></Implementation>
-</Method>
-
-<Method name="CloseTo">
-<Description><![CDATA[
-Asserts that the target is equal expected, to within a +/- delta range.
-<br/>
-Do ..CloseTo(1.5, 1, 0.5)]]></Description>
-<FormalSpec>pValue:%Numeric,pExpected:%Numeric,pDelta:%Numeric=0.5,pMessage=""</FormalSpec>
-<Implementation><![CDATA[
-	Set:pMessage="" pMessage = ..Message("Close to "_pExpected, pValue)
-	Do ..Approximately(pValue, pExpected, pDelta, pMessage)
+	Set classname = $ClassName(pOject)
+	Set:pMessage="" pMessage = ..Message(pExpectedClass,classname)
+	Do ..Eql(classname, pExpectedClass, pMessage)
 ]]></Implementation>
 </Method>
 
 <Method name="IsObject">
 <Description>
-Asserts that value is an object</Description>
-<FormalSpec>pValue,pMessage=""</FormalSpec>
+Assert that identify if it is an object reference</Description>
+<FormalSpec>pObject,pMessage=""</FormalSpec>
 <Implementation><![CDATA[
-	Set:pMessage="" pMessage = ..Message("Is Object")
-	Do ..True($IsObject(pValue) , pMessage)
-]]></Implementation>
-</Method>
-
-<Method name="IsNotObject">
-<Description>
-Asserts that value is NOT an object</Description>
-<FormalSpec>pValue,pMessage=""</FormalSpec>
-<Implementation><![CDATA[
-	Set:pMessage="" pMessage = ..Message("Is not Object", $ClassName(pValue))
-	Do ..False($IsObject(pValue) , pMessage)
-]]></Implementation>
-</Method>
-
-<Method name="Throws">
-<Description>
-Assert that throws an error, or promise rejects with an error.</Description>
-<FormalSpec>pStatus,pMessage=""</FormalSpec>
-<Implementation><![CDATA[	Do ..NotOk(pStatus)
-]]></Implementation>
-</Method>
-
-<Method name="NotThrows">
-<Description>
-Assert that doesn't throw an error or promise resolves</Description>
-<FormalSpec>pStatus,pMessage=""</FormalSpec>
-<Implementation><![CDATA[	Do ..Ok(pStatus)
-]]></Implementation>
-</Method>
-
-<Method name="TypeOf">
-<Description><![CDATA[
-Asserts that value’s type is pClassName
-<br/>
-Do ..TypeOf(pClass, "%RegisteredObject" )]]></Description>
-<FormalSpec>pValue,pClassName,pMessage=""</FormalSpec>
-<Implementation><![CDATA[	Do ..Is($ClassName(pValue),pClassName)
+	Set obj = $IsObject(pObject)
+	Set:pMessage="" pMessage = ..Message("Object Reference",$Case(obj'="",1:"Object Reference",:"Not an Object"))
+	Do ..True(obj, pMessage)
 ]]></Implementation>
 </Method>
 
@@ -735,29 +758,17 @@ Some inspirations:
 Assert that a string ends with str.
 
 'foobar'.should.endWith('bar');
-'foobar'.should.not.endWith('foo')
+'foobar'.should.not.endWith('foo');
 
+.approximately(num, delta)
+	Assert floating point number near num within delta margin:
+	(99.99).should.be.approximately(100, 0.1);
 
-Assert that value is not equal to expected.
-.deepEqual(value, expected, [message])
+.throws(function|promise, [error, [message]])
 
-Assert that value is deep equal to expected.
-.notDeepEqual(value, expected, [message])
-Assert that value is not deep equal to expected.
+Assert that function throws an error, or promise rejects with an error.
 
-.ifError(error, [message])
-Assert that error is falsy.
-
-assert.fail(actual, expected, message, operator) // just write wrong should assertion
-assert(value, message), assert.ok(value, [message]) // should(value).ok
-assert.notEqual(actual, expected, [message]) // should(actual).not.eql(expected, [message])
-assert.deepEqual(actual, expected, [message]) // should(actual).eql(expected, [message])
-assert.notDeepEqual(actual, expected, [message]) // should(actual).not.eql(expected, [message])
-assert.strictEqual(actual, expected, [message]) // should(actual).equal(expected, [message])
-assert.notStrictEqual(actual, expected, [message]) // should(actual).not.equal(expected, [message])
-assert.throws(block, [error], [message]) // should(block).throw([error])
-assert.doesNotThrow(block, [message]) // should(block).not.throw([error])
-assert.ifError(value) // should(value).Error (to check if it is error) or should(value).not.ok (to check that it is falsy)
+error can be a constructor, regex, error message or validation function.
 */
 ]]></Content>
 </UDLText>
@@ -783,21 +794,6 @@ assert.ifError(value) // should(value).Error (to check if it is error) or should
 	Else
 	{
 		Do $$$AssertTrue(0, "Property does not exist: "_PropertyName)
-	}
-]]></Implementation>
-</Method>
-
-<Method name="AssertMessageMapping">
-<FormalSpec>className:%String,type:%String,action:%String,index:%Integer=1</FormalSpec>
-<Implementation><![CDATA[
-	Do ##class(Ens.Util.XML.Reader).ObjectsFromXData(.items, className, "MessageMap", "Ens.Config.MessageMap")
-	If items="" {
-		Do $$$AssertNotEquals("", items, "No mappings found")
-	} ElseIf items.Size < index {
-		Do $$$AssertTrue(items.Size >= index, "Could not find mapping for given index '"_index_"'")
-	} Else {
-		Do $$$AssertEquals(type, items.GetAt(index).MessageType)
-		Do $$$AssertEquals(action, items.GetAt(index).ActionMethod)
 	}
 ]]></Implementation>
 </Method>
@@ -852,7 +848,7 @@ The <b>UnitTest.TestSuite</b> collects and executes a set of test cases in a par
 package.]]></Description>
 <Abstract>1</Abstract>
 <Super>%RegisteredObject</Super>
-<TimeChanged>64175,49557.444945</TimeChanged>
+<TimeChanged>64303,54971.534908</TimeChanged>
 <TimeCreated>61318,29605.415285</TimeCreated>
 
 <Parameter name="DESTROYTESTLOGS">
@@ -1035,6 +1031,7 @@ During development it can be helpful to only run a few specific tests.]]></Descr
 <ClassMethod>1</ClassMethod>
 <Private>1</Private>
 <Implementation><![CDATA[
+	// Set ^SYS("Security","CSP","AllowPrefix","/csp/user/","%UnitTest.")=1
 	Do ..GetTempTestXmlPathAndFileName(.path, .filename)
 	Set path = $Replace(path, ..GetTheLastFolderFromPath()_"\", "")
 	Set ^UnitTestRoot = path
@@ -1120,11 +1117,31 @@ During development it can be helpful to only run a few specific tests.]]></Descr
 </Class>
 
 
-<Project name="DEVCON_GEN" LastModified="2016-12-21 14:25:30.448122">
+<Project name="DEVCON_GEN" LastModified="2017-01-27 13:43:13.487043">
   <Items>
-    <ProjectItem name="Atomic" type="PKG"></ProjectItem>
-    <ProjectItem name="SampleProject" type="PKG"></ProjectItem>
-    <ProjectItem name="Tests" type="PKG"></ProjectItem>
+    <ProjectItem name="Atomic.UnitTest.ContinuousIntegrationEmailAlert" type="CLS"></ProjectItem>
+    <ProjectItem name="Atomic.UnitTest.ContinuousIntegrationService" type="CLS"></ProjectItem>
+    <ProjectItem name="Atomic.UnitTest.DataTypeWrapper" type="CLS"></ProjectItem>
+    <ProjectItem name="Atomic.UnitTest.EnsTestHelper" type="CLS"></ProjectItem>
+    <ProjectItem name="Atomic.UnitTest.ProductionTestHelper" type="CLS"></ProjectItem>
+    <ProjectItem name="Atomic.UnitTest.Stub" type="CLS"></ProjectItem>
+    <ProjectItem name="Atomic.UnitTest.TestHelper" type="CLS"></ProjectItem>
+    <ProjectItem name="Atomic.UnitTest.TestRunner" type="CLS"></ProjectItem>
+    <ProjectItem name="Atomic.UnitTest.TestSuite" type="CLS"></ProjectItem>
+    <ProjectItem name="SampleProject.DataModel.Person" type="CLS"></ProjectItem>
+    <ProjectItem name="SampleProject.External.LegacyData" type="CLS"></ProjectItem>
+    <ProjectItem name="SampleProject.Operation.PersonDataWriter" type="CLS"></ProjectItem>
+    <ProjectItem name="SampleProject.Operation.PersonFileOperation" type="CLS"></ProjectItem>
+    <ProjectItem name="SampleProject.Production.Production" type="CLS"></ProjectItem>
+    <ProjectItem name="SampleProject.Service.PersonRequestBuilder" type="CLS"></ProjectItem>
+    <ProjectItem name="SampleProject.Service.PersonService" type="CLS"></ProjectItem>
+    <ProjectItem name="Tests.LegacyConversionTest" type="CLS"></ProjectItem>
+    <ProjectItem name="Tests.PersonDataWriterTest" type="CLS"></ProjectItem>
+    <ProjectItem name="Tests.PersonFileOperationTest" type="CLS"></ProjectItem>
+    <ProjectItem name="Tests.PersonRequestBuilderTest" type="CLS"></ProjectItem>
+    <ProjectItem name="Tests.PersonTest" type="CLS"></ProjectItem>
+    <ProjectItem name="Tests.SettingsTest" type="CLS"></ProjectItem>
+    <ProjectItem name="Tests.TestSuite" type="CLS"></ProjectItem>
   </Items>
 </Project>
 
@@ -1372,8 +1389,6 @@ During development it can be helpful to only run a few specific tests.]]></Descr
 </Class>
 
 
-
-
 <Class name="SampleProject.Production.Production">
 <Super>Ens.Production</Super>
 <TimeChanged>64086,29982.076243</TimeChanged>
@@ -1452,11 +1467,11 @@ During development it can be helpful to only run a few specific tests.]]></Descr
 <Class name="SampleProject.Service.PersonService">
 <ProcedureBlock>1</ProcedureBlock>
 <Super>Ens.BusinessService</Super>
-<TimeChanged>64273,52141.904401</TimeChanged>
+<TimeChanged>64086,29786.932403</TimeChanged>
 <TimeCreated>61432,38431.63152</TimeCreated>
 
 <Property name="personRequestBuilder">
-<Type>SampleProject.Service.PersonRequestBuilder</Type>
+<Type>Service.PersonRequestBuilder</Type>
 </Property>
 
 <Parameter name="ADAPTER">
@@ -1478,51 +1493,6 @@ During development it can be helpful to only run a few specific tests.]]></Descr
 	Set tSC = ..personRequestBuilder.Build(.pInput, .person)
 	Do:$$$ISOK(tSC) ..SendRequestAsync("PersonFileOperation", person) 
 	Quit tSC
-]]></Implementation>
-</Method>
-</Class>
-
-
-<Class name="Tests.ExemplosSettings">
-<Super>Atomic.UnitTest.ProductionTestHelper</Super>
-<TimeChanged>64273,52071.455319</TimeChanged>
-<TimeCreated>63995,52732.35753</TimeCreated>
-
-<Parameter name="PRODUCTION">
-<Default>Exemplos.Producao</Default>
-</Parameter>
-
-<Method name="BsTipos">
-<Implementation><![CDATA[
-	Set config = "Tipos"
-	
-	Do ..AssertGeneralSetting(config, "Enabled", 1)
-]]></Implementation>
-</Method>
-
-<Method name="BoArquivo">
-<Implementation><![CDATA[
-	Set config = "Arquivo"
-	
-	Do ..AssertGeneralSetting(config, "Enabled", 1)
-]]></Implementation>
-</Method>
-</Class>
-
-
-<Class name="Tests.ExemplosSuite">
-<Super>Atomic.UnitTest.TestSuite</Super>
-<TimeChanged>64273,52059.614787</TimeChanged>
-<TimeCreated>63995,52710.414618</TimeCreated>
-
-<Parameter name="DESTROYTESTLOGS">
-<Default>1</Default>
-</Parameter>
-
-<Method name="Package">
-<ClassMethod>1</ClassMethod>
-<ReturnType>%String</ReturnType>
-<Implementation><![CDATA[	Quit "Exemplos.Test"
 ]]></Implementation>
 </Method>
 </Class>
@@ -1670,8 +1640,6 @@ During development it can be helpful to only run a few specific tests.]]></Descr
 ]]></Implementation>
 </Method>
 </Class>
-
-
 
 
 <Class name="Tests.PersonDataWriterTest">
