@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<Export generator="Cache" version="25" zv="Cache for Windows (x86-32) 2015.1.1 (Build 505U)" ts="2017-01-27 13:43:33">
+<Export generator="Cache" version="25" zv="Cache for Windows (x86-32) 2015.1.1 (Build 505U)" ts="2017-05-03 10:57:00">
+
+
 <Class name="Atomic.UnitTest.ContinuousIntegrationEmailAlert">
 <Description><![CDATA[
 The <b>UnitTest.ContinuousIntegrationEmailAlert</b> is a custom
@@ -134,10 +136,12 @@ the suite of tests.
 
 <Class name="Atomic.UnitTest.EnsTestHelper">
 <Super>%UnitTest.TestCase</Super>
-<TimeChanged>64310,48515.043678</TimeChanged>
+<TimeChanged>64406,39381.904024</TimeChanged>
 <TimeCreated>64310,48430.047016</TimeCreated>
 
 <Method name="SendRequest">
+<Description>
+Deprecated Method</Description>
 <ClassMethod>1</ClassMethod>
 <FormalSpec>pBSName:%String,pMensage,*pResponse=""</FormalSpec>
 <Implementation><![CDATA[
@@ -165,6 +169,100 @@ the suite of tests.
 		Do $$$AssertEquals(type, items.GetAt(index).MessageType)
 		Do $$$AssertEquals(action, items.GetAt(index).ActionMethod)
 	}
+]]></Implementation>
+</Method>
+
+<Method name="RunTimeInfo">
+<ClassMethod>1</ClassMethod>
+<FormalSpec>pTargetDispatchName:%String,*pConfigName:%String,*pClassName:%String</FormalSpec>
+<ReturnType>%Status</ReturnType>
+<Implementation><![CDATA[
+	Set tSC = $$$OK
+	Try {
+		Set pConfigName = "", pClassName = ""
+		Set pConfigName = $get(^Ens.Runtime("DispatchName",pTargetDispatchName))
+		Set:pConfigName'="" pClassName =  $get(^Ens.Runtime("ConfigItem",pConfigName,"ClassName"))
+	} Catch tException {
+		Set:$$$ISOK(tSC) tSC = tException.AsStatus()
+	}
+	Quit tSC
+]]></Implementation>
+</Method>
+
+<Method name="IsAService">
+<ClassMethod>1</ClassMethod>
+<FormalSpec>pClassName:%String</FormalSpec>
+<ReturnType>%Boolean</ReturnType>
+<Implementation><![CDATA[
+	Set tResult = $$$NO
+	Try {
+		Set class = ##class(%Dictionary.ClassDefinition).%OpenId(pClassName)
+		Set:($IsObject(class)&&(($Find(class.Super,"Ens.BusinessService")>0)||($Find(class.Super,"EnsLib.SOAP.Service")>0))) tResult = $$$YES
+	} Catch tException {
+		Set tResult = $$$NO
+	}
+	Quit tResult
+]]></Implementation>
+</Method>
+
+<Method name="Call">
+<Description>
+Call an ensemble component (Service, Operation or Process), Allow Test must be enabled on production</Description>
+<ClassMethod>1</ClassMethod>
+<FormalSpec>pTargetDispatchName:%String,pInput:%RegisteredObject,*pOutput:%RegisteredObject=""</FormalSpec>
+<ReturnType>%Status</ReturnType>
+<Implementation><![CDATA[
+	Set tSC = $$$OK, pOutput = ""
+	Try {
+		$$$THROWONERROR(tSC, ..RunTimeInfo(pTargetDispatchName, .pConfigName, .pClassname))
+		Set:pClassname="" tSC = $$$ERROR(5002,pTargetDispatchName _ " Not Found")
+		Throw:$$$ISERR(tSC)
+		
+		If ..IsAService(pClassname) {
+			$$$THROWONERROR(tSC, ..CallWithBusinessService(pTargetDispatchName, pInput, .pOutput))
+		} Else {
+			$$$THROWONERROR(tSC, ..CallWithoutBusinessService(pTargetDispatchName, pInput, .pOutput))
+		}
+		
+	} Catch tException {
+		Set:$$$ISOK(tSC) tSC = tException.AsStatus()
+	}
+	Quit tSC
+]]></Implementation>
+</Method>
+
+<Method name="CallWithBusinessService">
+<ClassMethod>1</ClassMethod>
+<FormalSpec>pTargetDispatchName:%String,pInput:%RegisteredObject,*pOutput:%RegisteredObject=""</FormalSpec>
+<Private>1</Private>
+<ReturnType>%Status</ReturnType>
+<Implementation><![CDATA[
+	Set tSC = $$$OK
+	Try {
+		$$$THROWONERROR(tSC, ##class(Ens.Director).CreateBusinessService(pTargetDispatchName,.tService))
+		Do tService.ProcessInput(pInput,.pOutput)
+		
+	} Catch tException {
+		Set:$$$ISOK(tSC) tSC = tException.AsStatus()
+	}
+	Quit tSC
+]]></Implementation>
+</Method>
+
+<Method name="CallWithoutBusinessService">
+<ClassMethod>1</ClassMethod>
+<FormalSpec>pTargetDispatchName:%String,pInput:%RegisteredObject,*pOutput:%RegisteredObject=""</FormalSpec>
+<Private>1</Private>
+<ReturnType>%Status</ReturnType>
+<Implementation><![CDATA[
+	Set tSC = $$$OK
+	Try {
+		$$$THROWONERROR(tSC,  ##Class(EnsLib.Testing.Service).SendTestRequest(pTargetDispatchName, pInput, .pOutput, .tSessionId, $$$YES))
+		Set ^CacheTemp.EnsRuntimeAppData($Namespace,"EnsLib.Testing.Service",tSessionId,"start") = $ZDatetime($ztimestamp,3,,3)
+	} Catch tException {
+		Set:$$$ISOK(tSC) tSC = tException.AsStatus()
+	}
+	Quit tSC
 ]]></Implementation>
 </Method>
 </Class>
@@ -1117,17 +1215,8 @@ During development it can be helpful to only run a few specific tests.]]></Descr
 </Class>
 
 
-<Project name="DEVCON_GEN" LastModified="2017-01-27 13:43:13.487043">
+<Project name="DEVCON_GEN" LastModified="2017-05-03 10:51:14.438885">
   <Items>
-    <ProjectItem name="Atomic.UnitTest.ContinuousIntegrationEmailAlert" type="CLS"></ProjectItem>
-    <ProjectItem name="Atomic.UnitTest.ContinuousIntegrationService" type="CLS"></ProjectItem>
-    <ProjectItem name="Atomic.UnitTest.DataTypeWrapper" type="CLS"></ProjectItem>
-    <ProjectItem name="Atomic.UnitTest.EnsTestHelper" type="CLS"></ProjectItem>
-    <ProjectItem name="Atomic.UnitTest.ProductionTestHelper" type="CLS"></ProjectItem>
-    <ProjectItem name="Atomic.UnitTest.Stub" type="CLS"></ProjectItem>
-    <ProjectItem name="Atomic.UnitTest.TestHelper" type="CLS"></ProjectItem>
-    <ProjectItem name="Atomic.UnitTest.TestRunner" type="CLS"></ProjectItem>
-    <ProjectItem name="Atomic.UnitTest.TestSuite" type="CLS"></ProjectItem>
     <ProjectItem name="SampleProject.DataModel.Person" type="CLS"></ProjectItem>
     <ProjectItem name="SampleProject.External.LegacyData" type="CLS"></ProjectItem>
     <ProjectItem name="SampleProject.Operation.PersonDataWriter" type="CLS"></ProjectItem>
@@ -1142,6 +1231,7 @@ During development it can be helpful to only run a few specific tests.]]></Descr
     <ProjectItem name="Tests.PersonTest" type="CLS"></ProjectItem>
     <ProjectItem name="Tests.SettingsTest" type="CLS"></ProjectItem>
     <ProjectItem name="Tests.TestSuite" type="CLS"></ProjectItem>
+    <ProjectItem name="Atomic" type="PKG"></ProjectItem>
   </Items>
 </Project>
 
